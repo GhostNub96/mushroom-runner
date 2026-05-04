@@ -593,9 +593,28 @@
     
     // Сохранение результата в рейтинг
     function submitScore(username, score) {
-        // 🔧 BACKEND: Здесь будет отправка на сервер:
-        // fetch('/api/leaderboard/submit', { method:'POST', body:JSON.stringify({username, score}) })
-        
+       // 🔧 BACKEND: Отправка счёта на сервер
+async function submitScore(username, score) {
+    const response = await fetch('/api/leaderboard/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, score, timestamp: Date.now() })
+    });
+    return await response.json();
+}
+
+// 🔧 BACKEND: Получение глобального рейтинга
+async function getLeaderboard(page = 1, limit = 100) {
+    const response = await fetch(`/api/leaderboard?page=${page}&limit=${limit}`);
+    return await response.json();
+}
+
+// 🔧 BACKEND: Получение места игрока
+async function getPlayerRank(username) {
+    const response = await fetch(`/api/leaderboard/rank?username=${username}`);
+    const data = await response.json();
+    return data.rank;
+}
         // Демо-режим: сохраняем локально
         const leaderboard = getLeaderboard();
         const existingIndex = leaderboard.findIndex(entry => entry.username === username);
