@@ -49,8 +49,9 @@
         /* Экраны */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(20,20,20,0.96); display: flex; flex-direction: column;
+            background: rgba(20,20,20,0.98); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 20; color: #fff;
+            overflow-y: auto;
         }
         .hidden { display: none !important; }
         
@@ -68,6 +69,8 @@
         .btn-small:hover { background: #000; color: #fff; }
         .btn-disabled { background: #444; color: #888; cursor: not-allowed; border-color: #666; }
         .btn-disabled:hover { background: #444; }
+        .btn-outline { background: transparent; border: 2px solid #fff; color: #fff; }
+        .btn-outline:hover { background: #fff; color: #000; }
         
         .back-btn {
             position: absolute; top: 15px; left: 15px; background: #fff; color: #000; border: 2px solid #fff;
@@ -75,8 +78,18 @@
         }
         .back-btn:hover { background: #ccc; }
 
+        /* Языковой переключатель */
+        .lang-switch {
+            display: flex; gap: 5px; margin-bottom: 15px;
+        }
+        .lang-btn {
+            padding: 6px 12px; background: #333; color: #aaa; border: 1px solid #555;
+            cursor: pointer; font-family: inherit; font-weight: bold; border-radius: 4px;
+        }
+        .lang-btn.active { background: #fff; color: #000; border-color: #fff; }
+
         /* Вкладки */
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
         .tab {
             padding: 8px 16px; background: #333; color: #aaa; border: none; cursor: pointer;
             font-family: inherit; font-weight: bold; border-radius: 5px 5px 0 0;
@@ -84,6 +97,62 @@
         .tab.active { background: #fff; color: #000; }
         .tab-content { display: none; width: 100%; max-width: 900px; }
         .tab-content.active { display: block; }
+
+        /* Формы ввода */
+        .input-group { margin: 15px 0; width: 100%; max-width: 300px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #aaa; }
+        .input-group input {
+            width: 100%; padding: 10px; border: 2px solid #444; border-radius: 6px;
+            background: #222; color: #fff; font-family: inherit; font-size: 16px;
+        }
+        .input-group input:focus { outline: none; border-color: #4dabf7; }
+
+        /* Рейтинг */
+        .leaderboard {
+            width: 100%; max-width: 500px; margin: 0 auto;
+            background: #222; border-radius: 12px; padding: 15px;
+        }
+        .leaderboard-header {
+            display: grid; grid-template-columns: 50px 1fr 100px; gap: 10px;
+            padding: 10px; border-bottom: 2px solid #444; font-weight: bold; color: #aaa;
+        }
+        .leaderboard-row {
+            display: grid; grid-template-columns: 50px 1fr 100px; gap: 10px;
+            padding: 12px 10px; border-bottom: 1px solid #333; align-items: center;
+            transition: background 0.2s;
+        }
+        .leaderboard-row:hover { background: #2a2a2a; }
+        .leaderboard-row.top1 { background: linear-gradient(90deg, transparent, #ffd70020, transparent); border-left: 3px solid #ffd700; }
+        .leaderboard-row.top2 { background: linear-gradient(90deg, transparent, #c0c0c020, transparent); border-left: 3px solid #c0c0c0; }
+        .leaderboard-row.top3 { background: linear-gradient(90deg, transparent, #cd7f3220, transparent); border-left: 3px solid #cd7f32; }
+        .rank { font-weight: bold; font-size: 18px; }
+        .rank.top1 { color: #ffd700; text-shadow: 0 0 10px #ffd70050; }
+        .rank.top2 { color: #c0c0c0; }
+        .rank.top3 { color: #cd7f32; }
+        .player-info { display: flex; align-items: center; gap: 10px; }
+        .player-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, #4dabf7, #74c0fc);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px;
+        }
+        .player-name { font-weight: 500; }
+        .player-name.me { color: #4dabf7; }
+        .score { text-align: right; font-weight: bold; color: #d4af37; }
+        .medal { font-size: 20px; }
+        
+        .leaderboard-footer {
+            text-align: center; padding: 15px; color: #666; font-size: 12px;
+        }
+        .pagination {
+            display: flex; justify-content: center; gap: 5px; margin-top: 15px;
+        }
+        .page-btn {
+            padding: 5px 12px; background: #333; color: #fff; border: none;
+            border-radius: 4px; cursor: pointer; font-family: inherit;
+        }
+        .page-btn.active { background: #4dabf7; color: #000; }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Кастомизация */
         .skin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
@@ -146,18 +215,23 @@
         }
         .social-proof span { animation: pulse 2s infinite; }
 
-        /* Модальное окно "Поделиться" */
+        /* Модальные окна */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
             z-index: 100; display: none;
         }
         .modal-content {
             background: #222; border: 3px solid #fff; padding: 25px; border-radius: 12px;
-            max-width: 400px; width: 90%; color: #fff; text-align: center;
+            max-width: 450px; width: 90%; color: #fff; text-align: center;
         }
         .modal h3 { margin-bottom: 15px; color: #4dabf7; }
         .modal p { margin: 8px 0; font-size: 14px; color: #ccc; }
+        .modal textarea {
+            width: 100%; height: 80px; background: #111; border: 1px solid #444;
+            color: #4dabf7; padding: 10px; font-family: monospace; margin: 10px 0;
+            resize: none;
+        }
         .share-options { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
         .share-option {
             width: 50px; height: 50px; border-radius: 50%;
@@ -176,6 +250,13 @@
         }
         .modal-btn.confirm { background: #4dabf7; color: #000; }
         .modal-btn.cancel { background: #444; color: #fff; }
+        .modal-btn.secondary { background: #6c757d; color: #fff; }
+
+        /* Политика конфиденциальности */
+        .privacy-text {
+            font-size: 12px; color: #aaa; text-align: left; margin: 15px 0; padding: 10px;
+            background: #111; border: 1px solid #444; line-height: 1.4; max-height: 300px; overflow-y: auto;
+        }
 
         /* Уровень */
         #levelOverlay {
@@ -207,6 +288,16 @@
             pointer-events: none; animation: floatUp 1s ease-out forwards;
             text-shadow: 1px 1px 0 #000; z-index: 13;
         }
+        
+        /* Профиль */
+        .profile-badge {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px;
+        }
+        .profile-avatar {
+            width: 24px; height: 24px; background: #4dabf7; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -216,53 +307,115 @@
     
     <div id="hud">
         <div class="hud-col">
-            <button class="hud-btn" onclick="goToMenu()">МЕНЮ</button>
-            <span>СЧЁТ: <span id="currentScore">0</span></span>
-            <span class="currency"> <span id="currencyDisplay">0</span></span>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="hud-btn" data-i18n="btn_menu" onclick="goToMenu()">МЕНЮ</button>
+                <div class="profile-badge" onclick="openProfileModal()" style="cursor:pointer;">
+                    <div class="profile-avatar" id="profileAvatar">🍄</div>
+                    <span id="profileName" style="max-width:100px; overflow:hidden; text-overflow:ellipsis;">Гость</span>
+                </div>
+            </div>
+            <span><span data-i18n="lbl_score">СЧЁТ</span>: <span id="currentScore">0</span></span>
+            <span class="currency">🍄 <span id="currencyDisplay">0</span></span>
         </div>
         <div class="hud-col right">
-            <button class="share-btn" onclick="openShareModal()">🔗 Поделиться</button>
-            <span>УРОВЕНЬ: <span id="levelDisplay">1</span></span>
-            <button class="hud-btn" onclick="togglePause()">⏸ ПАУЗА</button>
+            <button class="share-btn" data-i18n="btn_share" onclick="openShareModal()">🔗 ПОДЕЛИТЬСЯ</button>
+            <span><span data-i18n="lbl_level">УРОВЕНЬ</span>: <span id="levelDisplay">1</span></span>
+            <button class="hud-btn" data-i18n="btn_pause" onclick="togglePause()">⏸ ПАУЗА</button>
         </div>
     </div>
 
     <div class="buff-bar">
-        <div class="buff" id="buffShield">🛡️ ЩИТ <span id="buffShieldTime">0</span>с</div>
-        <div class="buff" id="buffSuper">🚀 СУПЕР <span id="buffSuperCount">0</span>/20</div>
-        <div class="buff" id="buffMonsterTimer"> МОНСТР <span id="buffMonsterTime">0</span>с</div>
+        <div class="buff" id="buffShield">🛡️ <span data-i18n="buff_shield">ЩИТ</span> <span id="buffShieldTime">0</span><span data-i18n="lbl_sec">с</span></div>
+        <div class="buff" id="buffSuper">🚀 <span data-i18n="buff_super">СУПЕР</span> <span id="buffSuperCount">0</span>/20</div>
+        <div class="buff" id="buffMonsterTimer">👹 <span data-i18n="buff_monster">МОНСТР</span> <span id="buffMonsterTime">0</span><span data-i18n="lbl_sec">с</span></div>
     </div>
 
     <div class="social-proof">
-        <span>🎮 <span id="onlineCount">127</span> игроков онлайн</span>
+        <span>🎮 <span id="onlineCount">127</span> <span data-i18n="lbl_online">игроков онлайн</span></span>
         <span>•</span>
-        <span>🔗 <span id="sharesCount">42</span> поделились сегодня</span>
+        <span>🏆 #<span id="myRankDisplay">-</span> <span data-i18n="lbl_rank">в рейтинге</span></span>
+    </div>
+
+    <!-- Экран входа по Email -->
+    <div id="authScreen" class="overlay">
+        <h1 data-i18n="game_title">ГРИБ БЕЖИТ <span style="font-size:16px; color:#4dabf7">[ДЕМО]</span></h1>
+        
+        <div id="loginForm">
+            <p style="margin-bottom:20px; color:#aaa" data-i18n="auth_desc">Войди по Email, чтобы сохранить прогресс</p>
+            <div class="input-group">
+                <label data-i18n="lbl_email">Email</label>
+                <input type="email" id="emailInput" placeholder="player@example.com">
+            </div>
+            <button class="btn" data-i18n="btn_start" onclick="handleLogin()">🎮 НАЧАТЬ ИГРУ</button>
+            
+            <div style="margin-top:20px;">
+                <button class="btn-outline" style="font-size:12px; padding:5px 10px;" onclick="showPrivacyPolicy()" data-i18n="btn_privacy">🔒 Политика конфиденциальности</button>
+            </div>
+            <p style="margin-top:15px; font-size:11px; color:#666" data-i18n="auth_note">
+                Прогресс сохраняется локально в браузере.<br>
+                Используй "Код сохранения" для переноса на другое устройство.
+            </p>
+        </div>
     </div>
 
     <!-- Главное меню -->
-    <div id="mainMenu" class="overlay">
-        <h1>ГРИБ БЕЖИТ <span style="font-size:16px; color:#4dabf7">[ДЕМО]</span></h1>
-        <button class="btn" onclick="startGame()">🎮 Играть бесплатно</button>
-        <button class="btn" onclick="showScreen('custom')">🎨 Скины</button>
-        <button class="btn" onclick="showScreen('shop')">🛒 Магазин <span style="font-size:10px; color:#888">(скоро)</span></button>
-        <button class="btn" onclick="showScreen('inventory')">🎒 Инвентарь</button>
-        <button class="btn" onclick="showScreen('settings')">⚙️ Настройки</button>
-        <button class="btn btn-disabled" title="Доступно после регистрации ИП">💎 Премиум (скоро)</button>
-        <p style="margin-top:20px; font-size:12px; color:#666">
-            🔗 Пригласи друга → получи +100 🍄<br>
-            Ссылка: <span id="referralLink" style="color:#4dabf7; cursor:pointer" onclick="copyReferral()">[копировать]</span>
+    <div id="mainMenu" class="overlay hidden">
+        <h1 data-i18n="game_title">ГРИБ БЕЖИТ <span style="font-size:16px; color:#4dabf7">[ДЕМО]</span></h1>
+        
+        <!-- Переключатель языка -->
+        <div class="lang-switch">
+            <button class="lang-btn" id="langRu" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" id="langEn" onclick="setLanguage('en')">EN</button>
+        </div>
+        
+        <button class="btn" data-i18n="btn_play" onclick="startGame()">🎮 ИГРАТЬ</button>
+        <button class="btn" data-i18n="btn_leaderboard" onclick="showScreen('leaderboard')">🏆 РЕЙТИНГ</button>
+        <button class="btn" data-i18n="btn_custom" onclick="showScreen('custom')">🎨 СКИНЫ</button>
+        <button class="btn" data-i18n="btn_shop" onclick="showScreen('shop')">🛒 МАГАЗИН <span style="font-size:10px; color:#888">(скоро)</span></button>
+        <button class="btn" data-i18n="btn_inventory" onclick="showScreen('inventory')">🎒 ИНВЕНТАРЬ</button>
+        <button class="btn" data-i18n="btn_settings" onclick="showScreen('settings')">⚙️ НАСТРОЙКИ</button>
+        <button class="btn btn-disabled" title="Доступно после регистрации ИП" data-i18n="btn_premium">💎 ПРЕМИУМ (скоро)</button>
+        
+        <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+            <button class="btn btn-small btn-outline" data-i18n="btn_save_code" onclick="openSaveModal()">💾 КОД СОХРАНЕНИЯ</button>
+            <button class="btn btn-small btn-outline" data-i18n="btn_load_code" onclick="openLoadModal()">📥 ЗАГРУЗИТЬ КОД</button>
+        </div>
+        
+        <p style="margin-top:15px; font-size:12px; color:#666">
+            🔗 <span data-i18n="lbl_invite">Пригласи друга</span>: <span id="referralLink" style="color:#4dabf7; cursor:pointer" onclick="copyReferral()">[<span data-i18n="btn_copy">копировать</span>]</span>
         </p>
+    </div>
+
+    <!-- Рейтинг -->
+    <div id="leaderboard" class="overlay hidden">
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="btn_back">Назад</span></button>
+        <h2 data-i18n="title_leaderboard">🏆 ТАБЛИЦА ЛИДЕРОВ</h2>
+        <p style="color:#aaa; margin-bottom:15px" data-i18n="sub_leaderboard">Топ-100 игроков по лучшему счёту</p>
+        
+        <div class="leaderboard">
+            <div class="leaderboard-header">
+                <span>#</span>
+                <span data-i18n="lbl_player">Игрок</span>
+                <span data-i18n="lbl_score">Счёт</span>
+            </div>
+            <div id="leaderboardRows"></div>
+            <div class="pagination" id="pagination"></div>
+            <div class="leaderboard-footer">
+                <p data-i18n="footer_leaderboard1">🔧 Демо-режим: рейтинг локальный</p>
+                <p style="margin-top:5px" data-i18n="footer_leaderboard2">В полной версии — глобальный рейтинг всех игроков</p>
+            </div>
+        </div>
     </div>
 
     <!-- Кастомизация -->
     <div id="custom" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🎨 СКИНЫ</h2>
-        <p style="color:#d4af37; font-size:18px">💰 БАЛАНС: <span id="customBalance">0</span> </p>
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="btn_back">Назад</span></button>
+        <h2 data-i18n="title_skins">🎨 СКИНЫ</h2>
+        <p style="color:#d4af37; font-size:18px">💰 <span data-i18n="lbl_balance">БАЛАНС</span>: <span id="customBalance">0</span> 🍄</p>
         
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('skins', this)">Скины</button>
-            <button class="tab" onclick="switchTab('inventory', this)">Инвентарь</button>
+            <button class="tab active" onclick="switchTab('skins', this)" data-i18n="tab_skins">Скины</button>
+            <button class="tab" onclick="switchTab('inventory', this)" data-i18n="tab_inventory">Инвентарь</button>
         </div>
         
         <div id="tab-skins" class="tab-content active">
@@ -271,7 +424,7 @@
         
         <div id="tab-inventory" class="tab-content">
             <div class="inventory-grid" id="inventoryGrid"></div>
-            <p style="margin-top:20px; font-size:12px; color:#666">
+            <p style="margin-top:20px; font-size:12px; color:#666" data-i18n="inventory_note">
                 Здесь будут храниться бонусы.<br>
                 Функционал в разработке.
             </p>
@@ -280,18 +433,18 @@
 
     <!-- Магазин (демо-режим) -->
     <div id="shop" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🛒 МАГАЗИН <span style="font-size:16px; color:#888">[ДЕМО]</span></h2>
-        <p style="color:#d4af37; font-size:16px">💰 : <span id="shopBalance">0</span></p>
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="btn_back">Назад</span></button>
+        <h2 data-i18n="title_shop">🛒 МАГАЗИН <span style="font-size:16px; color:#888">[ДЕМО]</span></h2>
+        <p style="color:#d4af37; font-size:16px">💰 : <span id="shopBalance">0</span> 🍄</p>
         
         <div class="tabs">
-            <button class="tab active" onclick="switchShopTab('veshenki', this)">За </button>
-            <button class="tab" onclick="switchShopTab('premium', this)">💎 Премиум</button>
+            <button class="tab active" onclick="switchShopTab('veshenki', this)" data-i18n="tab_veshenki">За <span data-i18n="lbl_veshenki">Вёшенки</span></button>
+            <button class="tab" onclick="switchShopTab('premium', this)" data-i18n="tab_premium">💎 <span data-i18n="lbl_premium">Премиум</span></button>
         </div>
         
         <div id="shop-veshenki" class="tab-content active">
             <div class="shop-grid" id="shopVeshenki"></div>
-            <p style="margin-top:15px; font-size:12px; color:#666">
+            <p style="margin-top:15px; font-size:12px; color:#666" data-i18n="shop_note">
                 💡 В демо-версии покупки отключены.<br>
                 Все предметы можно получить бесплатно во время игры!
             </p>
@@ -299,10 +452,10 @@
         <div id="shop-premium" class="tab-content">
             <div style="text-align:center; padding:30px;">
                 <div style="font-size:48px; margin-bottom:15px">💎</div>
-                <h3 style="margin-bottom:10px">Премиум-подписка</h3>
-                <p style="color:#aaa; margin-bottom:20px">Эксклюзивные скины и бонусы</p>
-                <button class="btn btn-disabled" disabled>Оформить (скоро)</button>
-                <p style="margin-top:15px; font-size:11px; color:#666">
+                <h3 style="margin-bottom:10px" data-i18n="premium_title">Премиум-подписка</h3>
+                <p style="color:#aaa; margin-bottom:20px" data-i18n="premium_desc">Эксклюзивные скины и бонусы</p>
+                <button class="btn btn-disabled" disabled data-i18n="btn_premium_disabled">Оформить (скоро)</button>
+                <p style="margin-top:15px; font-size:11px; color:#666" data-i18n="premium_note">
                     🔐 Для приёма платежей требуется регистрация ИП.<br>
                     Следите за обновлениями!
                 </p>
@@ -312,11 +465,11 @@
 
     <!-- Инвентарь -->
     <div id="inventory" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🎒 ИНВЕНТАРЬ</h2>
-        <p style="color:#d4af37">💰 : <span id="invBalance">0</span></p>
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="btn_back">Назад</span></button>
+        <h2 data-i18n="title_inventory">🎒 ИНВЕНТАРЬ</h2>
+        <p style="color:#d4af37">💰 : <span id="invBalance">0</span> 🍄</p>
         <div class="inventory-grid" id="fullInventoryGrid"></div>
-        <p style="margin-top:20px; font-size:12px; color:#666">
+        <p style="margin-top:20px; font-size:12px; color:#666" data-i18n="inventory_full_note">
             Предметы появляются после нахождения в игре.<br>
             Магазин будет доступен после запуска полной версии.
         </p>
@@ -324,43 +477,103 @@
 
     <!-- Настройки -->
     <div id="settings" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>⚙️ НАСТРОЙКИ</h2>
-        <button class="btn-small" id="soundBtn" onclick="toggleSetting('sound')">ЗВУК: ВКЛ</button>
-        <button class="btn-small" id="musicBtn" onclick="toggleSetting('music')">МУЗЫКА: ВКЛ</button>
-        <button class="btn-small" id="jumpSoundBtn" onclick="toggleSetting('jumpSound')">ПРЫЖКИ: ВКЛ</button>
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="btn_back">Назад</span></button>
+        <h2 data-i18n="title_settings">⚙️ НАСТРОЙКИ</h2>
+        <button class="btn-small" id="soundBtn" onclick="toggleSetting('sound')">ЗВУК: ВКЛ</button><br><br>
+        <button class="btn-small" id="musicBtn" onclick="toggleSetting('music')">МУЗЫКА: ВКЛ</button><br><br>
+        <button class="btn-small" id="jumpSoundBtn" onclick="toggleSetting('jumpSound')">ЗВУКИ ПРЫЖКА: ВКЛ</button><br><br>
+        <button class="btn-small btn-outline" onclick="logout()" style="margin-top:20px; border-color:#e63946; color:#e63946;" data-i18n="btn_logout">🚪 ВЫЙТИ ИЗ АККАУНТА</button>
         <p style="margin-top:20px; font-size:11px; color:#666">
-            Версия: 0.9.1 (демо + бонус основателя)<br>
-            <a href="#" onclick="alert('Скоро: оферта, политика конфиденциальности, контакты'); return false;" style="color:#4dabf7">Правовая информация</a>
+            <span data-i18n="version">Версия</span>: 0.9.4 (демо + мультиязычность)<br>
+            <a href="#" onclick="showPrivacyPolicy(); return false;" style="color:#4dabf7" data-i18n="link_privacy">🔒 Политика конфиденциальности</a>
         </p>
     </div>
 
     <!-- Пауза -->
     <div id="pauseMenu" class="overlay hidden">
-        <h2>ПАУЗА</h2>
-        <button class="btn" onclick="togglePause()">▶ Продолжить</button>
-        <button class="btn" onclick="goToMenu(); togglePause();">🏠 В меню</button>
+        <h2 data-i18n="title_pause">ПАУЗА</h2>
+        <button class="btn" data-i18n="btn_continue" onclick="togglePause()">▶ <span data-i18n="btn_continue">Продолжить</span></button>
+        <button class="btn" data-i18n="btn_to_menu" onclick="goToMenu(); togglePause();">🏠 <span data-i18n="btn_to_menu">В меню</span></button>
     </div>
 
     <!-- Проигрыш/Победа -->
     <div id="gameOverScreen" class="overlay hidden">
-        <h1 id="endTitle">ВРЕЗАЛСЯ</h1>
-        <p>СЧЁТ: <span id="finalScore">0</span></p>
-        <p style="color:#d4af37">ЗАРАБОТАНО: +<span id="sessionVeshenki">0</span> </p>
-        <p>БАЛАНС: <span id="totalVeshenki">0</span> 🍄</p>
-        <button class="btn" onclick="restartGame()">🔄 Повторить</button>
-        <button class="btn" onclick="goToMenu()">🏠 В меню</button>
-        <button class="btn" style="background:#4dabf7; color:#000" onclick="openShareModal()">🔗 Пригласить друга (+100 🍄)</button>
+        <h1 id="endTitle" data-i18n="title_crash">ВРЕЗАЛСЯ!</h1>
+        <p><span data-i18n="lbl_score">СЧЁТ</span>: <span id="finalScore">0</span></p>
+        <p style="color:#d4af37"><span data-i18n="lbl_earned">ЗАРАБОТАНО</span>: +<span id="sessionVeshenki">0</span> 🍄</p>
+        <p><span data-i18n="lbl_balance">БАЛАНС</span>: <span id="totalVeshenki">0</span> 🍄</p>
+        <div id="newRecord" style="color:#ffd700; font-weight:bold; margin:10px 0; display:none;" data-i18n="msg_new_record">🎉 НОВЫЙ РЕКОРД!</div>
+        <button class="btn" data-i18n="btn_retry" onclick="restartGame()">🔄 ПОВТОРИТЬ</button>
+        <button class="btn" data-i18n="btn_menu" onclick="goToMenu()">🏠 В МЕНЮ</button>
+        <button class="btn" style="background:#4dabf7; color:#000" data-i18n="btn_invite_friend" onclick="openShareModal()">🔗 <span data-i18n="btn_invite_friend">Пригласить друга (+100 🍄)</span></button>
     </div>
 
-    <div id="levelOverlay">УРОВЕНЬ 2</div>
+    <div id="levelOverlay"><span data-i18n="lbl_level">УРОВЕНЬ</span> 2</div>
+</div>
+
+<!-- Модальное окно: Код сохранения -->
+<div id="saveModal" class="modal">
+    <div class="modal-content">
+        <h3 data-i18n="modal_save_title">💾 Код сохранения</h3>
+        <p style="font-size:13px; color:#aaa" data-i18n="modal_save_desc">Скопируй этот код, чтобы перенести прогресс на другое устройство:</p>
+        <textarea id="saveCodeOutput" readonly onclick="this.select()"></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn secondary" onclick="copySaveCode()" data-i18n="btn_copy">📋 КОПИРОВАТЬ</button>
+            <button class="modal-btn cancel" onclick="closeSaveModal()" data-i18n="btn_close">ЗАКРЫТЬ</button>
+        </div>
+        <p style="margin-top:15px; font-size:11px; color:#666" data-i18n="modal_save_warning">
+            ⚠️ Не показывай код посторонним — он даёт доступ к твоему прогрессу!
+        </p>
+    </div>
+</div>
+
+<!-- Модальное окно: Загрузить код -->
+<div id="loadModal" class="modal">
+    <div class="modal-content">
+        <h3 data-i18n="modal_load_title">📥 Загрузить прогресс</h3>
+        <p style="font-size:13px; color:#aaa" data-i18n="modal_load_desc">Вставь код сохранения, полученный с другого устройства:</p>
+        <textarea id="saveCodeInput" placeholder="Вставь код сюда..."></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn confirm" onclick="loadSaveCode()" data-i18n="btn_load">✅ ЗАГРУЗИТЬ</button>
+            <button class="modal-btn cancel" onclick="closeLoadModal()" data-i18n="btn_close">ОТМЕНА</button>
+        </div>
+        <p id="loadStatus" style="margin-top:10px; font-size:12px; min-height:16px;"></p>
+    </div>
+</div>
+
+<!-- Модальное окно: Профиль -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <h3 data-i18n="modal_profile_title">👤 <span data-i18n="lbl_profile">Профиль</span>: <span id="modalUsername">Гость</span></h3>
+        <div style="text-align:left; margin:15px 0; font-size:14px;">
+            <p>🏆 <span data-i18n="lbl_best_score">Лучший счёт</span>: <span id="modalBestScore" style="color:#d4af37; font-weight:bold">0</span></p>
+            <p>🌍 <span data-i18n="lbl_rank">Место в рейтинге</span>: <span id="modalRank" style="color:#4dabf7; font-weight:bold">-</span></p>
+            <p>💰 <span data-i18n="lbl_veshenki">Вёшенок</span>: <span id="modalBalance" style="color:#d4af37; font-weight:bold">0</span></p>
+            <p>🎨 <span data-i18n="lbl_skins_unlocked">Открыто скинов</span>: <span id="modalSkinsCount" style="color:#d4af37; font-weight:bold">0</span></p>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn secondary" onclick="openSaveModal()" data-i18n="btn_export">💾 ЭКСПОРТ</button>
+            <button class="modal-btn cancel" onclick="closeProfileModal()" data-i18n="btn_close">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно: Политика конфиденциальности -->
+<div id="privacyModal" class="modal">
+    <div class="modal-content" style="text-align:left; max-height:80vh; overflow-y:auto;">
+        <h3 data-i18n="title_privacy" style="text-align:center; margin-bottom:15px;">🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ</h3>
+        <div class="privacy-text" id="privacyContent">
+            <!-- Заполняется через JS -->
+        </div>
+        <button class="btn-small" onclick="document.getElementById('privacyModal').style.display='none'" style="width:100%; margin-top:10px;" data-i18n="btn_close">ЗАКРЫТЬ</button>
+    </div>
 </div>
 
 <!-- Модальное окно "Поделиться" -->
 <div id="shareModal" class="modal">
     <div class="modal-content">
-        <h3>🔗 Поделиться игрой</h3>
-        <p>Пригласи друга → получи +100 🍄</p>
+        <h3 data-i18n="modal_share_title">🔗 <span data-i18n="modal_share_heading">Поделиться игрой</span></h3>
+        <p data-i18n="modal_share_desc">Пригласи друга → получи +100 🍄</p>
         
         <div class="share-options">
             <div class="share-option share-tg" onclick="shareTo('tg')" title="Telegram">✈️</div>
@@ -370,16 +583,227 @@
         </div>
         
         <p style="font-size:12px; color:#888">
-            Ссылка: <span id="shareUrl" style="color:#4dabf7; word-break:break-all">https://ghostnub96.github.io/mushroom-runner/?ref=YOUR_ID</span>
+            <span data-i18n="lbl_link">Ссылка</span>: <span id="shareUrl" style="color:#4dabf7; word-break:break-all">https://ghostnub96.github.io/mushroom-runner/?ref=YOUR_ID</span>
         </p>
         
         <div class="modal-buttons">
-            <button class="modal-btn cancel" onclick="closeShareModal()">Закрыть</button>
+            <button class="modal-btn cancel" onclick="closeShareModal()" data-i18n="btn_close">ЗАКРЫТЬ</button>
         </div>
     </div>
 </div>
 
 <script>
+    // === ПЕРЕВОДЫ ===
+    const translations = {
+        ru: {
+            game_title: "ГРИБ БЕЖИТ [ДЕМО]",
+            auth_desc: "Войди по Email, чтобы сохранить прогресс",
+            lbl_email: "Email",
+            btn_start: "🎮 НАЧАТЬ ИГРУ",
+            btn_privacy: "🔒 Политика конфиденциальности",
+            auth_note: "Прогресс сохраняется локально в браузере.\nИспользуй \"Код сохранения\" для переноса на другое устройство.",
+            btn_menu: "МЕНЮ",
+            lbl_score: "СЧЁТ",
+            lbl_level: "УРОВЕНЬ",
+            btn_pause: "⏸ ПАУЗА",
+            btn_share: "🔗 ПОДЕЛИТЬСЯ",
+            btn_play: "🎮 ИГРАТЬ",
+            btn_leaderboard: "🏆 РЕЙТИНГ",
+            btn_custom: "🎨 СКИНЫ",
+            btn_shop: "🛒 МАГАЗИН",
+            btn_inventory: "🎒 ИНВЕНТАРЬ",
+            btn_settings: "⚙️ НАСТРОЙКИ",
+            btn_premium: "💎 ПРЕМИУМ",
+            btn_save_code: "💾 КОД СОХРАНЕНИЯ",
+            btn_load_code: "📥 ЗАГРУЗИТЬ КОД",
+            lbl_invite: "Пригласи друга",
+            btn_copy: "копировать",
+            btn_back: "Назад",
+            title_leaderboard: "🏆 ТАБЛИЦА ЛИДЕРОВ",
+            sub_leaderboard: "Топ-100 игроков по лучшему счёту",
+            lbl_player: "Игрок",
+            footer_leaderboard1: "🔧 Демо-режим: рейтинг локальный",
+            footer_leaderboard2: "В полной версии — глобальный рейтинг всех игроков",
+            title_skins: "🎨 СКИНЫ",
+            lbl_balance: "БАЛАНС",
+            tab_skins: "Скины",
+            tab_inventory: "Инвентарь",
+            inventory_note: "Здесь будут храниться бонусы.\nФункционал в разработке.",
+            title_shop: "🛒 МАГАЗИН [ДЕМО]",
+            tab_veshenki: "За Вёшенки",
+            lbl_veshenki: "Вёшенки",
+            tab_premium: "💎 Премиум",
+            lbl_premium: "Премиум",
+            shop_note: "💡 В демо-версии покупки отключены.\nВсе предметы можно получить бесплатно во время игры!",
+            premium_title: "Премиум-подписка",
+            premium_desc: "Эксклюзивные скины и бонусы",
+            btn_premium_disabled: "Оформить (скоро)",
+            premium_note: "🔐 Для приёма платежей требуется регистрация ИП.\nСледите за обновлениями!",
+            title_inventory: "🎒 ИНВЕНТАРЬ",
+            inventory_full_note: "Предметы появляются после нахождения в игре.\nМагазин будет доступен после запуска полной версии.",
+            title_settings: "⚙️ НАСТРОЙКИ",
+            btn_logout: "🚪 ВЫЙТИ ИЗ АККАУНТА",
+            version: "Версия",
+            link_privacy: "🔒 Политика конфиденциальности",
+            title_pause: "ПАУЗА",
+            btn_continue: "▶ Продолжить",
+            btn_to_menu: "🏠 В меню",
+            title_crash: "ВРЕЗАЛСЯ!",
+            lbl_earned: "ЗАРАБОТАНО",
+            lbl_balance: "БАЛАНС",
+            msg_new_record: "🎉 НОВЫЙ РЕКОРД!",
+            btn_retry: "🔄 ПОВТОРИТЬ",
+            btn_invite_friend: "🔗 Пригласить друга (+100 🍄)",
+            modal_save_title: "💾 Код сохранения",
+            modal_save_desc: "Скопируй этот код, чтобы перенести прогресс на другое устройство:",
+            modal_save_warning: "⚠️ Не показывай код посторонним — он даёт доступ к твоему прогрессу!",
+            modal_load_title: "📥 Загрузить прогресс",
+            modal_load_desc: "Вставь код сохранения, полученный с другого устройства:",
+            btn_load: "✅ ЗАГРУЗИТЬ",
+            btn_close: "ЗАКРЫТЬ",
+            modal_profile_title: "👤 Профиль",
+            lbl_profile: "Профиль",
+            lbl_best_score: "Лучший счёт",
+            lbl_rank: "Место в рейтинге",
+            lbl_skins_unlocked: "Открыто скинов",
+            btn_export: "💾 ЭКСПОРТ",
+            title_privacy: "🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ",
+            privacy_content: `<strong>Хранение данных:</strong> В демо-версии ваш email, прогресс и счёт хранятся только в LocalStorage вашего браузера. Данные не отправляются на сервер.<br><br><strong>Использование:</strong> Email используется только как уникальный ключ для сохранения прогресса.<br><br><strong>Будущие обновления:</strong> В версиях с сервером email может использоваться для восстановления аккаунта. Вы будете уведомлены об изменениях политики.<br><br><strong>Безопасность:</strong> Мы не собираем персональные данные, не используем куки для отслеживания.`,
+            modal_share_title: "🔗 Поделиться игрой",
+            modal_share_heading: "Поделиться игрой",
+            modal_share_desc: "Пригласи друга → получи +100 🍄",
+            lbl_link: "Ссылка",
+            lbl_online: "игроков онлайн",
+            lbl_sec: "с",
+            buff_shield: "ЩИТ",
+            buff_super: "СУПЕР",
+            buff_monster: "МОНСТР"
+        },
+        en: {
+            game_title: "MUSHROOM RUNNER [DEMO]",
+            auth_desc: "Login with Email to save progress",
+            lbl_email: "Email",
+            btn_start: "🎮 START GAME",
+            btn_privacy: "🔒 Privacy Policy",
+            auth_note: "Progress saved locally in browser.\nUse \"Save Code\" to transfer to another device.",
+            btn_menu: "MENU",
+            lbl_score: "SCORE",
+            lbl_level: "LEVEL",
+            btn_pause: "⏸ PAUSE",
+            btn_share: "🔗 SHARE",
+            btn_play: "🎮 PLAY",
+            btn_leaderboard: "🏆 LEADERBOARD",
+            btn_custom: "🎨 SKINS",
+            btn_shop: "🛒 SHOP",
+            btn_inventory: "🎒 INVENTORY",
+            btn_settings: "⚙️ SETTINGS",
+            btn_premium: "💎 PREMIUM",
+            btn_save_code: "💾 SAVE CODE",
+            btn_load_code: "📥 LOAD CODE",
+            lbl_invite: "Invite friend",
+            btn_copy: "copy",
+            btn_back: "Back",
+            title_leaderboard: "🏆 LEADERBOARD",
+            sub_leaderboard: "Top 100 players by best score",
+            lbl_player: "Player",
+            footer_leaderboard1: "🔧 Demo mode: local rating",
+            footer_leaderboard2: "Full version will have global leaderboard",
+            title_skins: "🎨 SKINS",
+            lbl_balance: "BALANCE",
+            tab_skins: "Skins",
+            tab_inventory: "Inventory",
+            inventory_note: "Bonuses will be stored here.\nFeature in development.",
+            title_shop: "🛒 SHOP [DEMO]",
+            tab_veshenki: "For Mushrooms",
+            lbl_veshenki: "Mushrooms",
+            tab_premium: "💎 Premium",
+            lbl_premium: "Premium",
+            shop_note: "💡 Purchases disabled in demo.\nAll items can be found during gameplay!",
+            premium_title: "Premium Subscription",
+            premium_desc: "Exclusive skins and bonuses",
+            btn_premium_disabled: "Subscribe (soon)",
+            premium_note: "🔐 Payment processing requires business registration.\nStay tuned for updates!",
+            title_inventory: "🎒 INVENTORY",
+            inventory_full_note: "Items appear after finding them in-game.\nShop will be available in full release.",
+            title_settings: "⚙️ SETTINGS",
+            btn_logout: "🚪 LOGOUT",
+            version: "Version",
+            link_privacy: "🔒 Privacy Policy",
+            title_pause: "PAUSE",
+            btn_continue: "▶ Continue",
+            btn_to_menu: "🏠 To Menu",
+            title_crash: "CRASHED!",
+            lbl_earned: "EARNED",
+            lbl_balance: "BALANCE",
+            msg_new_record: "🎉 NEW RECORD!",
+            btn_retry: "🔄 RETRY",
+            btn_invite_friend: "🔗 Invite Friend (+100 🍄)",
+            modal_save_title: "💾 Save Code",
+            modal_save_desc: "Copy this code to transfer progress to another device:",
+            modal_save_warning: "⚠️ Don't share this code — it gives access to your progress!",
+            modal_load_title: "📥 Load Progress",
+            modal_load_desc: "Paste save code received from another device:",
+            btn_load: "✅ LOAD",
+            btn_close: "CLOSE",
+            modal_profile_title: "👤 Profile",
+            lbl_profile: "Profile",
+            lbl_best_score: "Best score",
+            lbl_rank: "Rank",
+            lbl_skins_unlocked: "Skins unlocked",
+            btn_export: "💾 EXPORT",
+            title_privacy: "🔒 PRIVACY POLICY",
+            privacy_content: `<strong>Data Storage:</strong> In demo version, your email, progress and score are stored only in your browser's LocalStorage. No data is sent to any server.<br><br><strong>Usage:</strong> Email is used only as a unique key to save your progress locally.<br><br><strong>Future Updates:</strong> In versions with backend, email may be used for account recovery. You will be notified of policy changes.<br><br><strong>Security:</strong> We don't collect personal data, don't use tracking cookies.`,
+            modal_share_title: "🔗 Share Game",
+            modal_share_heading: "Share Game",
+            modal_share_desc: "Invite a friend → get +100 🍄",
+            lbl_link: "Link",
+            lbl_online: "players online",
+            lbl_sec: "s",
+            buff_shield: "SHIELD",
+            buff_super: "SUPER",
+            buff_monster: "MONSTER"
+        }
+    };
+
+    let currentLang = localStorage.getItem('mushroom_lang') || 'ru';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mushroom_lang', lang);
+        
+        // Обновляем кнопки языка
+        document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+
+        // Переводим все элементы с data-i18n
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                if (key === 'privacy_content') {
+                    document.getElementById('privacyContent').innerHTML = translations[lang][key];
+                } else if (el.tagName === 'INPUT' && el.placeholder) {
+                    // Не переводим placeholder у email
+                } else {
+                    el.innerText = translations[lang][key];
+                }
+            }
+        });
+        
+        // Обновляем заголовок игры (сложный случай)
+        const gameTitle = document.querySelector('#mainMenu h1, #authScreen h1');
+        if (gameTitle) {
+            const demoTag = gameTitle.querySelector('span');
+            gameTitle.innerHTML = translations[lang].game_title.split(' [')[0] + (demoTag ? ` <span style="font-size:16px; color:#4dabf7">[${translations[lang].game_title.includes('[') ? 'ДЕМО' : 'DEMO'}]</span>` : '');
+        }
+        
+        // Перерисовываем скины и рейтинг, если они открыты
+        if (!document.getElementById('custom').classList.contains('hidden')) renderSkins();
+        if (!document.getElementById('leaderboard').classList.contains('hidden')) renderLeaderboard();
+        
+        updateSettingsUI();
+        updateUI();
+    }
+
     // === ИНИЦИАЛИЗАЦИЯ ===
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
@@ -393,6 +817,243 @@
     resize();
     window.addEventListener('resize', resize);
 
+    // === СИСТЕМА ПОЛЬЗОВАТЕЛЕЙ (EMAIL) ===
+    let currentUser = null;
+    const STORAGE_USERS = 'mushroom_users_v2';
+    const STORAGE_LEADERBOARD = 'mushroom_leaderboard_v2';
+    
+    function getAllUsers() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}'); }
+        catch(e) { return {}; }
+    }
+    function saveAllUsers(users) {
+        try { localStorage.setItem(STORAGE_USERS, JSON.stringify(users)); }
+        catch(e) { console.error('Save users error:', e); }
+    }
+    
+    function getLeaderboard() {
+        try {
+            const data = JSON.parse(localStorage.getItem(STORAGE_LEADERBOARD) || '[]');
+            return data.sort((a,b) => b.score - a.score).slice(0, 100);
+        } catch(e) { return []; }
+    }
+    
+    function submitScore(email, score) {
+        // 🔧 BACKEND: Здесь будет отправка на сервер
+        const leaderboard = getLeaderboard();
+        const existingIndex = leaderboard.findIndex(entry => entry.email === email);
+        
+        if (existingIndex >= 0) {
+            if (score > leaderboard[existingIndex].score) {
+                leaderboard[existingIndex].score = score;
+                leaderboard[existingIndex].date = Date.now();
+            }
+        } else {
+            leaderboard.push({ email, score, date: Date.now() });
+        }
+        
+        leaderboard.sort((a,b) => b.score - a.score);
+        const trimmed = leaderboard.slice(0, 100);
+        localStorage.setItem(STORAGE_LEADERBOARD, JSON.stringify(trimmed));
+        
+        // Обновляем лучший счёт в профиле
+        const users = getAllUsers();
+        if (users[email] && score > users[email].best) {
+            users[email].best = score;
+            saveAllUsers(users);
+        }
+    }
+    
+    function getPlayerRank(email) {
+        const leaderboard = getLeaderboard();
+        const index = leaderboard.findIndex(entry => entry.email === email);
+        return index >= 0 ? index + 1 : null;
+    }
+    
+    function renderLeaderboard(page = 1) {
+        const rowsContainer = document.getElementById('leaderboardRows');
+        const paginationContainer = document.getElementById('pagination');
+        const leaderboard = getLeaderboard();
+        const perPage = 10;
+        const totalPages = Math.ceil(leaderboard.length / perPage);
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+        const pageData = leaderboard.slice(start, end);
+        
+        rowsContainer.innerHTML = '';
+        
+        pageData.forEach((entry, idx) => {
+            const globalRank = start + idx + 1;
+            const isMe = entry.email === currentUser;
+            const isTop3 = globalRank <= 3;
+            const medal = globalRank === 1 ? '🥇' : globalRank === 2 ? '🥈' : globalRank === 3 ? '🥉' : '';
+            const avatar = entry.email[0]?.toUpperCase() || '?';
+            const displayName = entry.email.length > 12 ? entry.email.slice(0, 12) + '...' : entry.email;
+            
+            const row = document.createElement('div');
+            row.className = `leaderboard-row ${isTop3 ? `top${globalRank}` : ''}`;
+            row.innerHTML = `
+                <div class="rank ${isTop3 ? `top${globalRank}` : ''}">
+                    ${medal || globalRank}
+                </div>
+                <div class="player-info">
+                    <div class="player-avatar">${avatar}</div>
+                    <span class="player-name ${isMe ? 'me' : ''}">${displayName}${isMe ? ' (ты)' : ''}</span>
+                </div>
+                <div class="score">${entry.score.toLocaleString('ru-RU')}</div>
+            `;
+            rowsContainer.appendChild(row);
+        });
+        
+        // Пагинация
+        paginationContainer.innerHTML = '';
+        if (totalPages > 1) {
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn';
+            prevBtn.innerText = '◀';
+            prevBtn.disabled = page === 1;
+            prevBtn.onclick = () => renderLeaderboard(page - 1);
+            paginationContainer.appendChild(prevBtn);
+            
+            for (let p = 1; p <= totalPages; p++) {
+                if (p === 1 || p === totalPages || (p >= page - 2 && p <= page + 2)) {
+                    const btn = document.createElement('button');
+                    btn.className = `page-btn ${p === page ? 'active' : ''}`;
+                    btn.innerText = p;
+                    btn.onclick = () => renderLeaderboard(p);
+                    paginationContainer.appendChild(btn);
+                } else if (p === page - 3 || p === page + 3) {
+                    const span = document.createElement('span');
+                    span.innerText = '...';
+                    span.style.color = '#666';
+                    paginationContainer.appendChild(span);
+                }
+            }
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn';
+            nextBtn.innerText = '▶';
+            nextBtn.disabled = page === totalPages;
+            nextBtn.onclick = () => renderLeaderboard(page + 1);
+            paginationContainer.appendChild(nextBtn);
+        }
+        
+        // Обновляем отображение места игрока
+        if (currentUser) {
+            const rank = getPlayerRank(currentUser);
+            document.getElementById('myRankDisplay').innerText = rank ? rank : '-';
+            document.getElementById('modalRank').innerText = rank ? `#${rank}` : '-';
+        }
+    }
+    
+    // Регистрация / Вход по Email
+    function handleLogin() {
+        const email = document.getElementById('emailInput').value.trim().toLowerCase();
+        if (!email || !email.includes('@') || !email.includes('.')) {
+            alert(currentLang === 'ru' ? 'Введите корректный Email' : 'Please enter a valid Email');
+            return;
+        }
+        
+        const users = getAllUsers();
+        if (!users[email]) {
+            users[email] = createNewProfile();
+            saveAllUsers(users);
+            showText(W/2, H/2, currentLang === 'ru' ? `🎉 Добро пожаловать!` : `🎉 Welcome!`, 'bonus-text');
+        }
+        
+        // Авторизация
+        currentUser = email;
+        localStorage.setItem('mushroom_current_user', email);
+        
+        // Загрузка прогресса
+        loadUserProfile();
+        
+        // Переход в меню
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('mainMenu').classList.remove('hidden');
+        updateProfileUI();
+        renderLeaderboard(1);
+        
+        trackEvent('user_login', { email });
+        setLanguage(currentLang);
+    }
+    
+    function createNewProfile() {
+        return {
+            best: 0, veshenki: 0, ownedSkins: ['classic'], activeSkin: 'classic',
+            inventory: [], settings: { sound: true, music: true, jumpSound: true },
+            referralsGiven: 0, founderBonusReceived: false,
+            createdAt: Date.now(), lastPlayed: Date.now()
+        };
+    }
+    
+    function loadUserProfile() {
+        if (!currentUser) return;
+        const users = getAllUsers();
+        const profile = users[currentUser];
+        if (profile) {
+            // Копируем данные из профиля в игровые переменные
+            Object.assign(save, profile);
+        }
+        updateUI();
+    }
+    
+    function saveUserProfile() {
+        if (!currentUser) return;
+        const users = getAllUsers();
+        users[currentUser] = { ...save, lastPlayed: Date.now() };
+        saveAllUsers(users);
+    }
+    
+    function logout() {
+        saveUserProfile();
+        currentUser = null;
+        localStorage.removeItem('mushroom_current_user');
+        document.getElementById('mainMenu').classList.add('hidden');
+        document.getElementById('authScreen').classList.remove('hidden');
+        document.getElementById('emailInput').value = '';
+        document.getElementById('profileName').innerText = currentLang === 'ru' ? 'Гость' : 'Guest';
+    }
+    
+    function checkAuth() {
+        const savedUser = localStorage.getItem('mushroom_current_user');
+        if (savedUser) {
+            const users = getAllUsers();
+            if (users[savedUser]) {
+                currentUser = savedUser;
+                loadUserProfile();
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('mainMenu').classList.remove('hidden');
+                updateProfileUI();
+                renderLeaderboard(1);
+                setLanguage(currentLang);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    function updateProfileUI() {
+        if (!currentUser) {
+            document.getElementById('profileName').innerText = currentLang === 'ru' ? 'Гость' : 'Guest';
+            return;
+        }
+        const displayName = currentUser.length > 12 ? currentUser.slice(0, 12) + '...' : currentUser;
+        document.getElementById('profileName').innerText = displayName;
+        document.getElementById('modalUsername').innerText = currentUser;
+        document.getElementById('modalBestScore').innerText = save.best;
+        document.getElementById('modalBalance').innerText = save.veshenki;
+        document.getElementById('modalSkinsCount').innerText = save.ownedSkins.length;
+        
+        // Аватарка (первая буква)
+        document.getElementById('profileAvatar').innerText = currentUser[0].toUpperCase();
+        
+        // Место в рейтинге
+        const rank = getPlayerRank(currentUser);
+        document.getElementById('modalRank').innerText = rank ? `#${rank}` : '-';
+        document.getElementById('myRankDisplay').innerText = rank ? `#${rank}` : '-';
+    }
+
     // === АНАЛИТИКА И БОНУС ОСНОВАТЕЛЯ ===
     const ANALYTICS = {
         sessionId: Date.now() + '_' + Math.random().toString(36).slice(2),
@@ -401,33 +1062,24 @@
         referrals: 0
     };
     
-    // Генерация уникального ID игрока
-    let playerId = localStorage.getItem('playerId');
-    if (!playerId) {
-        playerId = Math.random().toString(36).slice(2, 10);
-        localStorage.setItem('playerId', playerId);
-    }
+    let playerId = currentUser || localStorage.getItem('playerId') || Math.random().toString(36).slice(2, 10);
+    if (!currentUser) localStorage.setItem('playerId', playerId);
     
-    // 🔥 БОНУС ДЛЯ ПЕРВЫХ ИГРОКОВ 🔥
-    // Дата деплоя: 20 января 2026 (измени на свою дату!)
     const DEPLOY_DATE = new Date('2026-01-20T00:00:00');
     const NOW = new Date();
     const DAYS_SINCE_DEPLOY = (NOW - DEPLOY_DATE) / (1000 * 60 * 60 * 24);
     
     function checkFounderBonus() {
-        // Если прошло меньше 7 дней с деплоя И игрок ещё не получил бонус
         if (DAYS_SINCE_DEPLOY < 7 && !save.ownedSkins.includes('founder')) {
-            // Добавляем скин "Основатель" и 500 вёшенок
             save.ownedSkins.push('founder');
             save.veshenki += 500;
-            save.founderBonusReceived = true; // Флаг, чтобы не выдать дважды
-            commitSave();
+            save.founderBonusReceived = true;
+            saveUserProfile();
             
-            // Показываем сообщение с небольшой задержкой, чтобы игрок увидел меню
             setTimeout(() => {
-                showText(W/2, H/2 - 50, '🎁 Ты один из первых!', 'referral-text');
+                showText(W/2, H/2 - 50, currentLang === 'ru' ? '🎁 Ты один из первых!' : '🎁 Early supporter!', 'referral-text');
                 setTimeout(() => {
-                    showText(W/2, H/2 + 20, '+500 🍄 и скин "Основатель" 👑', 'referral-text');
+                    showText(W/2, H/2 + 20, currentLang === 'ru' ? '+500 🍄 и скин "Основатель" 👑' : '+500 🍄 + Founder skin 👑', 'referral-text');
                     playSfx('referral');
                 }, 800);
             }, 1500);
@@ -435,9 +1087,9 @@
     }
     
     function trackEvent(event, data = {}) {
-        console.log(`[ANALYTICS] ${event}`, { ...data, playerId, session: ANALYTICS.sessionId });
+        console.log(`[ANALYTICS] ${event}`, { ...data, user: currentUser, session: ANALYTICS.sessionId });
         const history = JSON.parse(localStorage.getItem('mushroom_analytics') || '[]');
-        history.push({ ts: Date.now(), event, data, playerId, session: ANALYTICS.sessionId });
+        history.push({ ts: Date.now(), event, data, user: currentUser, session: ANALYTICS.sessionId });
         localStorage.setItem('mushroom_analytics', JSON.stringify(history.slice(-100)));
     }
     
@@ -446,19 +1098,19 @@
     // Проверка реферальной ссылки
     const urlParams = new URLSearchParams(window.location.search);
     const referrerId = urlParams.get('ref');
-    if (referrerId && referrerId !== playerId) {
+    if (referrerId && referrerId !== currentUser) {
         localStorage.setItem('referredBy', referrerId);
         trackEvent('referral_received', { referrer: referrerId });
         setTimeout(() => {
-            showText(W/2, H/2, '🎁 Друг пригласил! +100 🍄', 'referral-text');
+            showText(W/2, H/2, currentLang === 'ru' ? '🎁 Друг пригласил! +100 🍄' : '🎁 Friend invited! +100 🍄', 'referral-text');
             save.veshenki += 100;
-            commitSave();
+            saveUserProfile();
             updateUI();
         }, 2000);
     }
     
-    // Генерация моей реферальной ссылки
-    const myRefId = playerId;
+    // Генерация реферальной ссылки
+    const myRefId = currentUser || playerId;
     const baseUrl = 'https://ghostnub96.github.io/mushroom-runner/';
     document.getElementById('referralLink').innerText = `${baseUrl}?ref=${myRefId}`;
     document.getElementById('shareUrl').innerText = `${baseUrl}?ref=${myRefId}`;
@@ -496,7 +1148,9 @@
         }
         osc.start(now); osc.stop(now + 0.2);
         
-        const texts = ['Оп!', 'Эть!', 'Прыг!', 'Хоп!', 'Уп!', 'Гриб!', 'Вжух!', 'Бам!', 'Тыдыщ!', 'Поехали!'];
+        const textsRu = ['Оп!', 'Эть!', 'Прыг!', 'Хоп!', 'Уп!', 'Гриб!', 'Вжух!', 'Бам!', 'Тыдыщ!', 'Поехали!'];
+        const textsEn = ['Hop!', 'Jump!', 'Boing!', 'Whoosh!', 'Up!', 'Shroom!', 'Zoom!', 'Bam!', 'Yay!', 'Go!'];
+        const texts = currentLang === 'ru' ? textsRu : textsEn;
         showText(player.x, player.y - 20, texts[idx], 'jump-text');
     }
 
@@ -575,152 +1229,59 @@
         }
     }
 
-    // === СОХРАНЕНИЯ ===
-    let save = { 
-        best: 0, 
-        veshenki: 0,
-        ownedSkins: ['classic'],
-        activeSkin: 'classic',
-        inventory: [],
-        settings: { sound: true, music: true, jumpSound: true },
-        referralsGiven: 0,
-        founderBonusReceived: false
-    };
-    try {
-        const s = localStorage.getItem('mushroom_demo_v1');
-        if (s) save = JSON.parse(s);
-    } catch(e) {}
-    settings = save.settings;
-    updateSettingsUI();
-
-    // === СКИНЫ (добавлен скин "Основатель") ===
+    // === СОХРАНЕНИЯ (ИГРОВЫЕ) ===
+    let save = createNewProfile();
+    
+    // === СКИНЫ ===
     const SKINS = {
-        classic: { name: 'Классика', price: 0, type: 'free', stats: {jump:1.0,speed:1.0,grav:1.0}, draw: drawClassic },
-        tophat: { name: 'Шляпник', price: 1500, type: 'free', stats: {jump:1.25,speed:1.0,grav:1.0}, draw: drawTophat },
-        sport: { name: 'Спортсмен', price: 2000, type: 'free', stats: {jump:1.0,speed:1.15,grav:1.0}, draw: drawSport },
-        suit: { name: 'Деловой', price: 3000, type: 'free', stats: {jump:1.0,speed:1.0,grav:0.75}, draw: drawSuit },
-        ninja: { name: 'Ниндзя', price: 5000, type: 'free', stats: {jump:1.3,speed:1.1,grav:0.9}, draw: drawNinja },
-        king: { name: 'Король', price: 8000, type: 'free', stats: {jump:1.15,speed:1.05,grav:0.85}, draw: drawKing },
-        
-        // 🔥 НОВЫЙ: Скин "Основатель" (эксклюзив для ранних игроков)
-        founder: { name: 'Основатель 👑', price: 0, type: 'founder', stats: {jump:1.2,speed:1.1,grav:0.9}, draw: drawFounder },
-        
-        // В разработке
-        cyber: { name: 'Кибер-гриб', price: 0, type: 'coming', stats: null, draw: null },
-        pirate: { name: 'Пират', price: 0, type: 'coming', stats: null, draw: null },
-        wizard: { name: 'Волшебник', price: 0, type: 'coming', stats: null, draw: null },
-        astronaut: { name: 'Космонавт', price: 0, type: 'coming', stats: null, draw: null },
-        samurai: { name: 'Самурай', price: 0, type: 'coming', stats: null, draw: null },
-        chef: { name: 'Повар', price: 0, type: 'coming', stats: null, draw: null },
-        detective: { name: 'Детектив', price: 0, type: 'coming', stats: null, draw: null },
-        
-        // Премиум
-        golden: { name: 'Золотой гриб', price: 0, type: 'premium', stats: {jump:1.4,speed:1.2,grav:0.7}, draw: drawGolden },
-        diamond: { name: 'Бриллиантовый', price: 0, type: 'premium', stats: {jump:1.5,speed:1.3,grav:0.6}, draw: drawDiamond },
-        cosmic: { name: 'Космический', price: 0, type: 'premium', stats: {jump:1.6,speed:1.4,grav:0.5}, draw: drawCosmic }
+        classic: { name: 'Классика', nameEn: 'Classic', price: 0, type: 'free', stats: {jump:1.0,speed:1.0,grav:1.0}, draw: drawClassic },
+        tophat: { name: 'Шляпник', nameEn: 'Top Hat', price: 1500, type: 'free', stats: {jump:1.25,speed:1.0,grav:1.0}, draw: drawTophat },
+        sport: { name: 'Спортсмен', nameEn: 'Athlete', price: 2000, type: 'free', stats: {jump:1.0,speed:1.15,grav:1.0}, draw: drawSport },
+        suit: { name: 'Деловой', nameEn: 'Business', price: 3000, type: 'free', stats: {jump:1.0,speed:1.0,grav:0.75}, draw: drawSuit },
+        ninja: { name: 'Ниндзя', nameEn: 'Ninja', price: 5000, type: 'free', stats: {jump:1.3,speed:1.1,grav:0.9}, draw: drawNinja },
+        king: { name: 'Король', nameEn: 'King', price: 8000, type: 'free', stats: {jump:1.15,speed:1.05,grav:0.85}, draw: drawKing },
+        founder: { name: 'Основатель 👑', nameEn: 'Founder 👑', price: 0, type: 'founder', stats: {jump:1.2,speed:1.1,grav:0.9}, draw: drawFounder },
+        cyber: { name: 'Кибер-гриб', nameEn: 'Cyber Mushroom', price: 0, type: 'coming', stats: null, draw: null },
+        pirate: { name: 'Пират', nameEn: 'Pirate', price: 0, type: 'coming', stats: null, draw: null },
+        wizard: { name: 'Волшебник', nameEn: 'Wizard', price: 0, type: 'coming', stats: null, draw: null },
+        astronaut: { name: 'Космонавт', nameEn: 'Astronaut', price: 0, type: 'coming', stats: null, draw: null },
+        samurai: { name: 'Самурай', nameEn: 'Samurai', price: 0, type: 'coming', stats: null, draw: null },
+        chef: { name: 'Повар', nameEn: 'Chef', price: 0, type: 'coming', stats: null, draw: null },
+        detective: { name: 'Детектив', nameEn: 'Detective', price: 0, type: 'coming', stats: null, draw: null },
+        golden: { name: 'Золотой гриб', nameEn: 'Golden Mushroom', price: 0, type: 'premium', stats: {jump:1.4,speed:1.2,grav:0.7}, draw: drawGolden },
+        diamond: { name: 'Бриллиантовый', nameEn: 'Diamond', price: 0, type: 'premium', stats: {jump:1.5,speed:1.3,grav:0.6}, draw: drawDiamond },
+        cosmic: { name: 'Космический', nameEn: 'Cosmic', price: 0, type: 'premium', stats: {jump:1.6,speed:1.4,grav:0.5}, draw: drawCosmic }
     };
 
-    // 🔥 Отрисовка скина "Основатель"
+    // Функции отрисовки скинов (оставляем как были)
     function drawFounder(p) {
-        // Золотой корпус
-        ctx.fillStyle = '#d4af37';
-        ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath();
-        ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0);
-        ctx.fill();
-        
-        // Корона
-        ctx.fillStyle = '#ffd700';
-        ctx.beginPath();
-        ctx.moveTo(p.x+4, p.y+14);
-        ctx.lineTo(p.x+9, p.y+2);
-        ctx.lineTo(p.x+14, p.y+14);
-        ctx.lineTo(p.x+24, p.y);
-        ctx.lineTo(p.x+34, p.y+14);
-        ctx.lineTo(p.x+39, p.y+2);
-        ctx.lineTo(p.x+44, p.y+14);
-        ctx.closePath();
-        ctx.fill();
-        
-        // Глаза-звёзды
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.moveTo(p.x+12, p.y+16);
-        ctx.lineTo(p.x+14, p.y+12);
-        ctx.lineTo(p.x+16, p.y+16);
-        ctx.lineTo(p.x+12, p.y+16);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(p.x+36, p.y+16);
-        ctx.lineTo(p.x+38, p.y+12);
-        ctx.lineTo(p.x+40, p.y+16);
-        ctx.lineTo(p.x+36, p.y+16);
-        ctx.fill();
-    }
-
-    function drawGolden(p) {
         ctx.fillStyle = '#d4af37'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
         ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+12, p.y+16, 4, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x+36, p.y+16, 4, 0, Math.PI*2); ctx.fill();
-    }
-    function drawDiamond(p) {
-        ctx.fillStyle = '#7dd3fc'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.moveTo(p.x+24, p.y+10); ctx.lineTo(p.x+34, p.y+20); ctx.lineTo(p.x+24, p.y+30); ctx.lineTo(p.x+14, p.y+20); ctx.fill();
-    }
-    function drawCosmic(p) {
-        ctx.fillStyle = '#a78bfa'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+15, p.y+18, 3, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x+33, p.y+18, 3, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x+24, p.y+12, 4, 0, Math.PI*2); ctx.fill();
-    }
-    function drawClassic(p) {
-        ctx.fillStyle = '#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(p.x+12, p.y+16, 4, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x+36, p.y+16, 4, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x+24, p.y+8, 5, 0, Math.PI*2); ctx.fill();
-    }
-    function drawTophat(p) {
-        ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillRect(p.x+14, p.y-5, 20, 28); ctx.fillRect(p.x+9, p.y+20, 30, 5);
-    }
-    function drawSport(p) {
-        ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#111'; ctx.fillRect(p.x+4, p.y+14, 40, 6); ctx.fillRect(p.x-4, p.y+15, 8, 4);
-    }
-    function drawSuit(p) {
-        ctx.fillStyle='#fff'; ctx.fillRect(p.x+16, p.y+28, 16, 22);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+24, 24, 15, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#111'; ctx.fillRect(p.x+22, p.y+30, 4, 14);
-        ctx.strokeStyle='#111'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(p.x+16, p.y+18, 4, 0, Math.PI*2); ctx.stroke();
-        ctx.beginPath(); ctx.arc(p.x+32, p.y+18, 4, 0, Math.PI*2); ctx.stroke();
-    }
-    function drawNinja(p) {
-        ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+24, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillRect(p.x+4, p.y+16, 40, 6); ctx.fillStyle='#111'; ctx.fillRect(p.x+34, p.y+14, 10, 10);
-    }
-    function drawKing(p) {
-        ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
-        ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill();
-        ctx.fillStyle='#d4af37'; ctx.beginPath();
+        ctx.fillStyle = '#ffd700'; ctx.beginPath();
         ctx.moveTo(p.x+4, p.y+14); ctx.lineTo(p.x+9, p.y+2); ctx.lineTo(p.x+14, p.y+14);
         ctx.lineTo(p.x+24, p.y); ctx.lineTo(p.x+34, p.y+14); ctx.lineTo(p.x+39, p.y+2); ctx.lineTo(p.x+44, p.y+14);
-        ctx.fill();
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.moveTo(p.x+12, p.y+16); ctx.lineTo(p.x+14, p.y+12); ctx.lineTo(p.x+16, p.y+16); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(p.x+36, p.y+16); ctx.lineTo(p.x+38, p.y+12); ctx.lineTo(p.x+40, p.y+16); ctx.fill();
     }
+    function drawGolden(p) { ctx.fillStyle = '#d4af37'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+12, p.y+16, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+36, p.y+16, 4, 0, Math.PI*2); ctx.fill(); }
+    function drawDiamond(p) { ctx.fillStyle = '#7dd3fc'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.moveTo(p.x+24, p.y+10); ctx.lineTo(p.x+34, p.y+20); ctx.lineTo(p.x+24, p.y+30); ctx.lineTo(p.x+14, p.y+20); ctx.fill(); }
+    function drawCosmic(p) { ctx.fillStyle = '#a78bfa'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(p.x+15, p.y+18, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+33, p.y+18, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+24, p.y+12, 4, 0, Math.PI*2); ctx.fill(); }
+    function drawClassic(p) { ctx.fillStyle = '#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(p.x+12, p.y+16, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+36, p.y+16, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(p.x+24, p.y+8, 5, 0, Math.PI*2); ctx.fill(); }
+    function drawTophat(p) { ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(p.x+14, p.y-5, 20, 28); ctx.fillRect(p.x+9, p.y+20, 30, 5); }
+    function drawSport(p) { ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#111'; ctx.fillRect(p.x+4, p.y+14, 40, 6); ctx.fillRect(p.x-4, p.y+15, 8, 4); }
+    function drawSuit(p) { ctx.fillStyle='#fff'; ctx.fillRect(p.x+16, p.y+28, 16, 22); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+24, 24, 15, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#111'; ctx.fillRect(p.x+22, p.y+30, 4, 14); ctx.strokeStyle='#111'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(p.x+16, p.y+18, 4, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.arc(p.x+32, p.y+18, 4, 0, Math.PI*2); ctx.stroke(); }
+    function drawNinja(p) { ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+24, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(p.x+4, p.y+16, 40, 6); ctx.fillStyle='#111'; ctx.fillRect(p.x+34, p.y+14, 10, 10); }
+    function drawKing(p) { ctx.fillStyle='#fff'; ctx.fillRect(p.x+18, p.y+26, 12, 24); ctx.beginPath(); ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle='#d4af37'; ctx.beginPath(); ctx.moveTo(p.x+4, p.y+14); ctx.lineTo(p.x+9, p.y+2); ctx.lineTo(p.x+14, p.y+14); ctx.lineTo(p.x+24, p.y); ctx.lineTo(p.x+34, p.y+14); ctx.lineTo(p.x+39, p.y+2); ctx.lineTo(p.x+44, p.y+14); ctx.fill(); }
 
-    // === ПРЕДМЕТЫ (демо-версия) ===
+    // === ПРЕДМЕТЫ ===
     const ITEMS = {
-        shield1: { id: 'shield1', name: 'Щит (малый)', type: 'bonus', price: 300, currency: 'veshenki', icon: '🛡️', desc: 'Защита от 1 препятствия', effect: {shield:1} },
-        super1: { id: 'super1', name: 'Супер-прыжок', type: 'bonus', price: 500, currency: 'veshenki', icon: '🚀', desc: '+5 мощных прыжков', effect: {super:5} },
-        coinBoost: { id: 'coinBoost', name: 'x2 ', type: 'bonus', price: 800, currency: 'veshenki', icon: '⭐', desc: 'Удвоение сбора на 1 забег', effect: {coinMult:2} },
-        monsterCharge: { id: 'monsterCharge', name: 'Заряд Монстра', type: 'bonus', price: 0, currency: 'demo', icon: '👹', desc: '1 активация (демо)', effect: {monster:1} },
-        revive: { id: 'revive', name: 'Возрождение', type: 'bonus', price: 0, currency: 'demo', icon: '❤️', desc: 'Продолжить после проигрыша', effect: {revive:1} }
+        shield1: { id: 'shield1', name: 'Щит (малый)', nameEn: 'Small Shield', type: 'bonus', price: 300, currency: 'veshenki', icon: '🛡️', desc: 'Защита от 1 препятствия', descEn: 'Block 1 obstacle', effect: {shield:1} },
+        super1: { id: 'super1', name: 'Супер-прыжок', nameEn: 'Super Jump', type: 'bonus', price: 500, currency: 'veshenki', icon: '🚀', desc: '+5 мощных прыжков', descEn: '+5 powerful jumps', effect: {super:5} },
+        coinBoost: { id: 'coinBoost', name: 'x2 Вёшенки', nameEn: 'x2 Mushrooms', type: 'bonus', price: 800, currency: 'veshenki', icon: '⭐', desc: 'Удвоение сбора на 1 забег', descEn: 'Double collection for 1 run', effect: {coinMult:2} },
+        monsterCharge: { id: 'monsterCharge', name: 'Заряд Монстра', nameEn: 'Monster Charge', type: 'bonus', price: 0, currency: 'demo', icon: '👹', desc: '1 активация (демо)', descEn: '1 activation (demo)', effect: {monster:1} },
+        revive: { id: 'revive', name: 'Возрождение', nameEn: 'Revive', type: 'bonus', price: 0, currency: 'demo', icon: '❤️', desc: 'Продолжить после проигрыша', descEn: 'Continue after game over', effect: {revive:1} }
     };
 
     // === ИГРОВАЯ ЛОГИКА ===
@@ -842,15 +1403,15 @@
                 showText(this.x, this.y, `+${this.val}`, 'bonus-text');
             } else if (this.type === 'shield') {
                 activeBuffs.shield = 5; updateBuffUI();
-                showText(this.x, this.y, 'ЩИТ 5с!', 'bonus-text');
+                showText(this.x, this.y, currentLang === 'ru' ? 'ЩИТ 5с!' : 'SHIELD 5s!', 'bonus-text');
             } else if (this.type === 'super') {
                 activeBuffs.super = 20; updateBuffUI();
-                showText(this.x, this.y, 'СУПЕР x20', 'bonus-text');
+                showText(this.x, this.y, currentLang === 'ru' ? 'СУПЕР x20' : 'SUPER x20', 'bonus-text');
             } else if (this.type === 'monster') {
                 isMonsterMode = true;
                 activeBuffs.monster = 15;
                 gameSpeed = baseSpeed * 2.0;
-                showText(this.x, this.y, 'МОНСТР АКТИВИРОВАН!', 'bonus-text');
+                showText(this.x, this.y, currentLang === 'ru' ? 'МОНСТР АКТИВИРОВАН!' : 'MONSTER ACTIVATED!', 'bonus-text');
                 playSfx('monster');
             }
             playSfx('bonus'); updateUI();
@@ -881,7 +1442,7 @@
         document.getElementById('buffMonsterTime').innerText = Math.ceil(activeBuffs.monster);
     }
 
-    // === ВКЛАДКИ ===
+    // === УПРАВЛЕНИЕ ВКЛАДКАМИ ===
     function switchTab(tabId, btn) {
         document.querySelectorAll('#custom .tab').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('#custom .tab-content').forEach(c => c.classList.remove('active'));
@@ -908,6 +1469,8 @@
             const isPremium = skin.type === 'premium';
             const isFounder = skin.type === 'founder';
             
+            const skinName = currentLang === 'ru' ? skin.name : skin.nameEn;
+            
             const div = document.createElement('div');
             div.className = `skin-card ${active?'active':''} ${!owned && !isComing && !isFounder?'locked':''} ${isComing?'coming-soon':''} ${isPremium?'premium':''}`;
             if (isPremium) div.innerHTML += '<div class="demo-badge">PREMIUM</div>';
@@ -922,28 +1485,30 @@
             }
             
             if (isComing) {
-                div.innerHTML += `<div class="skin-name">${skin.name}</div><div class="skin-soon">В разработке</div>`;
+                div.innerHTML += `<div class="skin-name">${skinName}</div><div class="skin-soon">${currentLang === 'ru' ? 'В разработке' : 'Coming soon'}</div>`;
             } else {
                 if (!owned && !isPremium && !isFounder) div.innerHTML += `<div class="skin-price">${skin.price}</div>`;
                 if (isPremium) div.innerHTML += `<div class="skin-price">PREMIUM</div>`;
                 if (isFounder && !owned) div.innerHTML += `<div class="skin-price">EARLY</div>`;
                 
-                div.innerHTML += `<div class="skin-name">${skin.name}</div>
-                    <div class="stats-wrap"><div class="skin-stats"> Прыжок: ${skin.stats?`x${skin.stats.jump}`:'—'}<br>⚡ Скорость: ${skin.stats?`x${skin.stats.speed}`:'—'}<br> Гравитация: ${skin.stats?`x${skin.stats.grav}`:'—'}</div></div>
-                    <div class="skin-status">${owned?(active?'✓ ВЫБРАНО':'КУПЛЕНО'):(isPremium?'💎 Скоро':(isFounder?'🎁 Только для первых':'ЗАКРЫТО'))}</div>`;
+                const statusText = owned ? (active ? (currentLang === 'ru' ? '✓ ВЫБРАНО' : '✓ SELECTED') : (currentLang === 'ru' ? 'КУПЛЕНО' : 'OWNED')) : (isPremium ? (currentLang === 'ru' ? '💎 Скоро' : '💎 Soon') : (isFounder ? (currentLang === 'ru' ? '🎁 Только для первых' : '🎁 Early only') : (currentLang === 'ru' ? 'ЗАКРЫТО' : 'LOCKED')));
+                
+                div.innerHTML += `<div class="skin-name">${skinName}</div>
+                    <div class="stats-wrap"><div class="skin-stats"> ${currentLang === 'ru' ? 'Прыжок' : 'Jump'}: ${skin.stats?`x${skin.stats.jump}`:'—'}<br>⚡ ${currentLang === 'ru' ? 'Скорость' : 'Speed'}: ${skin.stats?`x${skin.stats.speed}`:'—'}<br> ${currentLang === 'ru' ? 'Гравитация' : 'Gravity'}: ${skin.stats?`x${skin.stats.grav}`:'—'}</div></div>
+                    <div class="skin-status">${statusText}</div>`;
             }
             
             div.onclick = () => {
-                if (isComing) { showText(W/2, H/2, 'Скоро в обновлении!', 'bonus-text'); return; }
-                if (isPremium) { showText(W/2, H/2, 'Доступно в полной версии', 'bonus-text'); return; }
-                if (isFounder && !owned) { showText(W/2, H/2, 'Только для ранних игроков', 'bonus-text'); return; }
-                if (owned) { save.activeSkin=key; commitSave(); playSfx('buy'); renderSkins(); }
+                if (isComing) { showText(W/2, H/2, currentLang === 'ru' ? 'Скоро в обновлении!' : 'Coming soon!', 'bonus-text'); return; }
+                if (isPremium) { showText(W/2, H/2, currentLang === 'ru' ? 'Доступно в полной версии' : 'Available in full version', 'bonus-text'); return; }
+                if (isFounder && !owned) { showText(W/2, H/2, currentLang === 'ru' ? 'Только для ранних игроков' : 'Early supporters only', 'bonus-text'); return; }
+                if (owned) { save.activeSkin=key; saveUserProfile(); playSfx('buy'); renderSkins(); }
                 else if (save.veshenki >= skin.price) {
                     save.veshenki -= skin.price; save.ownedSkins.push(key); save.activeSkin=key;
-                    commitSave(); playSfx('buy'); updateUI(); renderSkins();
-                    showText(W/2, H/2, `КУПЛЕНО: ${skin.name}!`, 'bonus-text');
+                    saveUserProfile(); playSfx('buy'); updateUI(); renderSkins();
+                    showText(W/2, H/2, currentLang === 'ru' ? `КУПЛЕНО: ${skin.name}!` : `PURCHASED: ${skin.nameEn}!`, 'bonus-text');
                 } else {
-                    showText(W/2, H/2, 'МАЛО ВЁШЕНОК!', 'bonus-text');
+                    showText(W/2, H/2, currentLang === 'ru' ? 'МАЛО ВЁШЕНОК!' : 'NOT ENOUGH MUSHROOMS!', 'bonus-text');
                 }
             };
             grid.appendChild(div);
@@ -956,18 +1521,20 @@
         grid.innerHTML = '';
         const ownedItems = save.inventory.filter(id => ITEMS[id]);
         if (ownedItems.length === 0) {
-            grid.innerHTML = '<p style="color:#666; grid-column: 1/-1">Инвентарь пуст.<br>Находи предметы в игре!</p>';
+            grid.innerHTML = `<p style="color:#666; grid-column: 1/-1">${currentLang === 'ru' ? 'Инвентарь пуст.<br>Находи предметы в игре!' : 'Inventory is empty.<br>Find items in-game!'}</p>`;
             return;
         }
         ownedItems.forEach(id => {
             const item = ITEMS[id];
+            const itemName = currentLang === 'ru' ? item.name : item.nameEn;
+            const itemDesc = currentLang === 'ru' ? item.desc : item.descEn;
             const div = document.createElement('div');
             div.className = 'item-card';
             div.innerHTML = `
                 <div class="item-icon">${item.icon}</div>
-                <div class="item-name">${item.name}</div>
-                <div class="item-desc">${item.desc}</div>
-                <button class="item-btn" onclick="useItem('${id}')">Использовать</button>
+                <div class="item-name">${itemName}</div>
+                <div class="item-desc">${itemDesc}</div>
+                <button class="item-btn" onclick="useItem('${id}')">${currentLang === 'ru' ? 'Использовать' : 'Use'}</button>
             `;
             grid.appendChild(div);
         });
@@ -978,15 +1545,17 @@
         const veshGrid = document.getElementById('shopVeshenki'); veshGrid.innerHTML = '';
         Object.values(ITEMS).filter(i => i.currency === 'veshenki').forEach(item => {
             const owned = save.inventory.includes(item.id);
+            const itemName = currentLang === 'ru' ? item.name : item.nameEn;
+            const itemDesc = currentLang === 'ru' ? item.desc : item.descEn;
             const div = document.createElement('div');
             div.className = 'item-card';
             div.innerHTML = `
                 <div class="item-icon">${item.icon}</div>
-                <div class="item-name">${item.name}</div>
-                <div class="item-desc">${item.desc}</div>
-                <div class="item-price veshenki">${item.price} </div>
-                <button class="item-btn" disabled title="В демо-версии все предметы можно найти в игре">
-                    ${owned?'<span class="item-owned">Есть</span>':'Найти в игре'}
+                <div class="item-name">${itemName}</div>
+                <div class="item-desc">${itemDesc}</div>
+                <div class="item-price veshenki">${item.price} 🍄</div>
+                <button class="item-btn" disabled title="${currentLang === 'ru' ? 'В демо-версии все предметы можно найти в игре' : 'In demo, all items can be found in-game'}">
+                    ${owned ? `<span class="item-owned">${currentLang === 'ru' ? 'Есть' : 'Owned'}</span>` : (currentLang === 'ru' ? 'Найти в игре' : 'Find in game')}
                 </button>
             `;
             veshGrid.appendChild(div);
@@ -995,11 +1564,11 @@
 
     // === НАСТРОЙКИ ===
     function updateSettingsUI() {
-        document.getElementById('soundBtn').innerText = `ЗВУК: ${settings.sound?'ВКЛ':'ВЫКЛ'}`;
-        document.getElementById('musicBtn').innerText = `МУЗЫКА: ${settings.music?'ВКЛ':'ВЫКЛ'}`;
-        document.getElementById('jumpSoundBtn').innerText = `ПРЫЖКИ: ${settings.jumpSound?'ВКЛ':'ВЫКЛ'}`;
+        document.getElementById('soundBtn').innerText = `${currentLang === 'ru' ? 'ЗВУК' : 'SOUND'}: ${settings.sound ? (currentLang === 'ru' ? 'ВКЛ' : 'ON') : (currentLang === 'ru' ? 'ВЫКЛ' : 'OFF')}`;
+        document.getElementById('musicBtn').innerText = `${currentLang === 'ru' ? 'МУЗЫКА' : 'MUSIC'}: ${settings.music ? (currentLang === 'ru' ? 'ВКЛ' : 'ON') : (currentLang === 'ru' ? 'ВЫКЛ' : 'OFF')}`;
+        document.getElementById('jumpSoundBtn').innerText = `${currentLang === 'ru' ? 'ПРЫЖКИ' : 'JUMP SFX'}: ${settings.jumpSound ? (currentLang === 'ru' ? 'ВКЛ' : 'ON') : (currentLang === 'ru' ? 'ВЫКЛ' : 'OFF')}`;
     }
-    function toggleSetting(k) { settings[k]=!settings[k]; save.settings=settings; commitSave(); updateSettingsUI(); if(k==='music'){settings.music?startMusic():stopMusic();} }
+    function toggleSetting(k) { settings[k]=!settings[k]; save.settings=settings; saveUserProfile(); updateSettingsUI(); if(k==='music'){settings.music?startMusic():stopMusic();} }
 
     function togglePause() {
         if(state==='PLAY'){state='PAUSED'; document.getElementById('pauseMenu').classList.remove('hidden');}
@@ -1009,9 +1578,9 @@
     function startGame() {
         initAudio(); 
         trackEvent('game_start');
-        checkFounderBonus(); // 🔥 Проверяем бонус основателя при старте игры
-        showScreen('mainMenu'); document.getElementById('mainMenu').classList.add('hidden');
-        document.getElementById('hud').style.display='flex'; resetGame(); state='PLAY'; loop();
+        checkFounderBonus();
+        document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('hud').style.display='flex';
+        resetGame(); state='PLAY'; loop();
     }
     function resetGame() {
         score=0; level=1; passed=0; baseSpeed=LVL[0].s; sessionVeshenki=0;
@@ -1025,7 +1594,9 @@
         document.getElementById('gameOverScreen').classList.add('hidden'); resetGame(); state='PLAY'; loop(); 
     }
     function showLevelOverlay(lvl) {
-        const el=document.getElementById('levelOverlay'); el.innerText=`УРОВЕНЬ ${lvl}`; el.style.display='block';
+        const el=document.getElementById('levelOverlay'); 
+        el.innerHTML = `<span data-i18n="lbl_level">${currentLang === 'ru' ? 'УРОВЕНЬ' : 'LEVEL'}</span> ${lvl}`;
+        el.style.display='block';
         setTimeout(()=>el.style.display='none', 2000);
     }
 
@@ -1058,9 +1629,9 @@
         if (score >= rewardThreshold) {
             save.veshenki += 50;
             sessionVeshenki += 50;
-            showText(player.x, player.y - 30, '+50 (дистанция)', 'bonus-text');
+            showText(player.x, player.y - 30, `+50 ${currentLang === 'ru' ? '(дистанция)' : '(distance)'}`, 'bonus-text');
             rewardThreshold += 500;
-            commitSave(); updateUI();
+            saveUserProfile(); updateUI();
         }
 
         player.update(); player.draw(); legFrame++;
@@ -1083,13 +1654,21 @@
                     state='GAMEOVER';
                     trackEvent('game_over', { score, level, session: ANALYTICS.sessionId });
                     if(score>save.best) save.best=score;
-                    save.veshenki+=sessionVeshenki; commitSave();
-                    document.getElementById('endTitle').innerText = level>=5?'ПОБЕДА':'ВРЕЗАЛСЯ';
-                    document.getElementById('finalScore').innerText=score;
-                    document.getElementById('sessionVeshenki').innerText=sessionVeshenki;
-                    document.getElementById('totalVeshenki').innerText=save.veshenki;
-                    document.getElementById('gameOverScreen').classList.remove('hidden');
-                    return;
+                    save.veshenki+=sessionVeshenki;
+                    
+                    // Отправка счёта в рейтинг
+                    if (currentUser && score > 0) {
+                        submitScore(currentUser, score);
+                        const rank = getPlayerRank(currentUser);
+                        if (rank && rank <= 100) {
+                            document.getElementById('newRecord').style.display = 'block';
+                        }
+                    }
+                    
+                    saveUserProfile();
+                    document.getElementById('endTitle').innerText = level>=5 ? (currentLang === 'ru' ? 'ПОБЕДА' : 'VICTORY') : (currentLang === 'ru' ? 'ВРЕЗАЛСЯ!' : 'CRASHED!');
+                    document.getElementById('finalScore').innerText=score; document.getElementById('sessionVeshenki').innerText=sessionVeshenki; document.getElementById('totalVeshenki').innerText=save.veshenki;
+                    document.getElementById('gameOverScreen').classList.remove('hidden'); return;
                 }
             }
             if(!o.passed && o.x+o.w < player.x) {
@@ -1097,8 +1676,8 @@
                 if(passed>=LVL[level-1].n) {
                     if(level<5) { level++; baseSpeed=LVL[level-1].s; passed=0; applySkinStats(); showLevelOverlay(level); }
                     else {
-                        state='GAMEOVER'; save.best=Math.max(save.best,score); save.veshenki+=sessionVeshenki; commitSave();
-                        document.getElementById('endTitle').innerText='ПОБЕДА'; document.getElementById('finalScore').innerText=score;
+                        state='GAMEOVER'; save.best=Math.max(save.best,score); save.veshenki+=sessionVeshenki; saveUserProfile();
+                        document.getElementById('endTitle').innerText = currentLang === 'ru' ? 'ПОБЕДА' : 'VICTORY'; document.getElementById('finalScore').innerText=score;
                         document.getElementById('sessionVeshenki').innerText=sessionVeshenki; document.getElementById('totalVeshenki').innerText=save.veshenki;
                         document.getElementById('gameOverScreen').classList.remove('hidden');
                     }
@@ -1123,7 +1702,7 @@
 
     // === СОХРАНЕНИЯ ===
     function commitSave() { 
-        try{localStorage.setItem('mushroom_demo_v1', JSON.stringify(save));}catch(e){} 
+        try{localStorage.setItem('mushroom_demo_v2', JSON.stringify(save));}catch(e){} 
     }
 
     // === МЕНЮ ===
@@ -1134,6 +1713,7 @@
         if (id === 'custom') { renderSkins(); renderInventory(); }
         if (id === 'shop') { renderShop(); }
         if (id === 'inventory') renderInventory(true);
+        if (id === 'leaderboard') { renderLeaderboard(1); }
         updateUI();
     }
     
@@ -1147,23 +1727,68 @@
         trackEvent('menu_open');
     }
 
-    // === ПОДЕЛИТЬСЯ ===
-    function openShareModal() {
-        document.getElementById('shareModal').style.display = 'flex';
-        trackEvent('share_modal_open');
+    // === СИСТЕМА СОХРАНЕНИЙ (МОДАЛЬНЫЕ ОКНА) ===
+    function openSaveModal() {
+        const code = generateSaveCode();
+        if (code) {
+            document.getElementById('saveCodeOutput').value = code;
+            document.getElementById('saveModal').style.display = 'flex';
+            trackEvent('save_modal_open');
+        } else { alert(currentLang === 'ru' ? 'Ошибка генерации кода' : 'Error generating code'); }
     }
-    function closeShareModal() {
-        document.getElementById('shareModal').style.display = 'none';
+    function closeSaveModal() { document.getElementById('saveModal').style.display = 'none'; }
+    function copySaveCode() {
+        const el = document.getElementById('saveCodeOutput'); el.select(); document.execCommand('copy');
+        showText(W/2, H/2, currentLang === 'ru' ? '📋 Код скопирован!' : '📋 Code copied!', 'bonus-text'); trackEvent('save_code_copied');
     }
     
+    function openLoadModal() {
+        document.getElementById('saveCodeInput').value = '';
+        document.getElementById('loadStatus').innerText = '';
+        document.getElementById('loadModal').style.display = 'flex';
+    }
+    function closeLoadModal() { document.getElementById('loadModal').style.display = 'none'; }
+    function loadSaveCode() {
+        const code = document.getElementById('saveCodeInput').value.trim();
+        const status = document.getElementById('loadStatus');
+        if (loadFromSaveCode(code)) {
+            status.innerText = currentLang === 'ru' ? '✅ Прогресс загружен!' : '✅ Progress loaded!'; status.style.color = '#69db7c';
+            setTimeout(() => { closeLoadModal(); goToMenu(); showText(W/2, H/2, currentLang === 'ru' ? '🎉 Прогресс восстановлен!' : '🎉 Progress restored!', 'bonus-text'); }, 1000);
+            trackEvent('save_code_loaded');
+        } else {
+            status.innerText = currentLang === 'ru' ? '❌ Неверный код!' : '❌ Invalid code!'; status.style.color = '#e63946';
+        }
+    }
+    
+    function openProfileModal() {
+        updateProfileUI();
+        document.getElementById('profileModal').style.display = 'flex';
+    }
+    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+
+    function showPrivacyPolicy() {
+        document.getElementById('privacyContent').innerHTML = translations[currentLang].privacy_content;
+        document.getElementById('privacyModal').style.display = 'flex';
+    }
+
+    // === ПОДЕЛИТЬСЯ ===
+    function openShareModal() { document.getElementById('shareModal').style.display = 'flex'; trackEvent('share_modal_open'); }
+    function closeShareModal() { document.getElementById('shareModal').style.display = 'none'; }
     function shareTo(platform) {
         const url = `${baseUrl}?ref=${myRefId}`;
-        const text = `🍄 Я играю в Mushroom Runner! Присоединяйся: ${url}`;
+        const shareTexts = {
+            ru: `🍄 Я играю в Mushroom Runner! Присоединяйся: ${url}`,
+            en: `🍄 I'm playing Mushroom Runner! Join me: ${url}`
+        };
+        const shareTitles = {
+            ru: 'Mushroom Runner — бесплатная браузерная игра',
+            en: 'Mushroom Runner — free browser game'
+        };
         
         let shareUrl = '';
-        if (platform === 'tg') shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent('🍄 Гриб бежит! Играй со мной: ')}`;
-        else if (platform === 'vk') shareUrl = `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent('Mushroom Runner — бесплатная браузерная игра')}`;
-        else if (platform === 'wa') shareUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        if (platform === 'tg') shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTexts[currentLang].split(':')[0] + ': ')}`;
+        else if (platform === 'vk') shareUrl = `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(shareTitles[currentLang])}`;
+        else if (platform === 'wa') shareUrl = `https://wa.me/?text=${encodeURIComponent(shareTexts[currentLang])}`;
         
         if (shareUrl) {
             window.open(shareUrl, '_blank');
@@ -1171,10 +1796,10 @@
             if (!localStorage.getItem('shared_' + myRefId)) {
                 localStorage.setItem('shared_' + myRefId, '1');
                 setTimeout(() => {
-                    showText(W/2, H/2, '🎁 +50 🍄 за попытку поделиться!', 'referral-text');
+                    showText(W/2, H/2, currentLang === 'ru' ? '🎁 +50 🍄 за попытку поделиться!' : '🎁 +50 🍄 for sharing attempt!', 'referral-text');
                     save.veshenki += 50;
                     save.referralsGiven++;
-                    commitSave();
+                    saveUserProfile();
                     updateUI();
                     playSfx('referral');
                 }, 1000);
@@ -1182,24 +1807,51 @@
         }
         closeShareModal();
     }
-    
     function copyLink() {
         const url = `${baseUrl}?ref=${myRefId}`;
         navigator.clipboard.writeText(url).then(() => {
-            showText(W/2, H/2, '🔗 Ссылка скопирована!', 'bonus-text');
+            showText(W/2, H/2, currentLang === 'ru' ? '🔗 Ссылка скопирована!' : '🔗 Link copied!', 'bonus-text');
             trackEvent('link_copied');
         });
         closeShareModal();
     }
-    
     function copyReferral() {
         const url = `${baseUrl}?ref=${myRefId}`;
         navigator.clipboard.writeText(url).then(() => {
-            showText(W/2, H/2, '🔗 Реферальная ссылка скопирована!', 'bonus-text');
+            showText(W/2, H/2, currentLang === 'ru' ? '🔗 Реферальная ссылка скопирована!' : '🔗 Referral link copied!', 'bonus-text');
         });
     }
 
-    // === СОЦИАЛЬНЫЕ ЭЛЕМЕНТЫ (демо-данные) ===
+    // === КОДЫ СОХРАНЕНИЯ ===
+    function generateSaveCode() {
+        if (!currentUser) return null;
+        const data = { u: currentUser, p: save };
+        try {
+            const json = JSON.stringify(data);
+            const encoded = btoa(unescape(encodeURIComponent(json)));
+            return `MR-${encoded}`;
+        } catch(e) { return null; }
+    }
+    
+    function loadFromSaveCode(code) {
+        if (!code || !code.startsWith('MR-')) return false;
+        try {
+            const json = decodeURIComponent(escape(atob(code.slice(3))));
+            const data = JSON.parse(json);
+            if (!data.u || !data.p) return false;
+            currentUser = data.u;
+            save = { ...createNewProfile(), ...data.p };
+            const users = getAllUsers();
+            users[currentUser] = save;
+            saveAllUsers(users);
+            localStorage.setItem('mushroom_current_user', currentUser);
+            updateProfileUI();
+            updateUI();
+            return true;
+        } catch(e) { return false; }
+    }
+
+    // === СОЦИАЛЬНЫЕ ЭЛЕМЕНТЫ ===
     function updateSocialProof() {
         const online = 50 + Math.floor(Math.random() * 200);
         const shares = 10 + Math.floor(Math.random() * 100);
@@ -1209,14 +1861,20 @@
     setInterval(updateSocialProof, 30000);
 
     // === ИНИЦИАЛИЗАЦИЯ ===
-    updateUI();
-    updateSocialProof();
+    // Проверяем авторизацию при загрузке
+    if (!checkAuth()) {
+        document.getElementById('authScreen').classList.remove('hidden');
+        // Устанавливаем язык по умолчанию
+        setLanguage(currentLang);
+    }
+    
+    // Инициализация политики конфиденциальности
+    document.getElementById('privacyContent').innerHTML = translations[currentLang].privacy_content;
+    
+    updateUI(); updateSettingsUI(); updateSocialProof();
     ctx.strokeStyle='#fff'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(0,GROUND_Y); ctx.lineTo(W,GROUND_Y); ctx.stroke();
     
-    window.addEventListener('beforeunload', () => {
-        const duration = Math.round((Date.now() - ANALYTICS.startTime) / 1000);
-        trackEvent('session_end', { duration, pageViews: ANALYTICS.pageViews });
-    });
+    window.addEventListener('beforeunload', () => { if(currentUser) saveUserProfile(); });
 </script>
 </body>
 </html>
