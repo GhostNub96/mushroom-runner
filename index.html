@@ -330,7 +330,7 @@
         <button class="btn-small" id="musicBtn" onclick="toggleSetting('music')">МУЗЫКА: ВКЛ</button>
         <button class="btn-small" id="jumpSoundBtn" onclick="toggleSetting('jumpSound')">ПРЫЖКИ: ВКЛ</button>
         <p style="margin-top:20px; font-size:11px; color:#666">
-            Версия: 0.9.0 (демо)<br>
+            Версия: 0.9.1 (демо + бонус основателя)<br>
             <a href="#" onclick="alert('Скоро: оферта, политика конфиденциальности, контакты'); return false;" style="color:#4dabf7">Правовая информация</a>
         </p>
     </div>
@@ -370,7 +370,7 @@
         </div>
         
         <p style="font-size:12px; color:#888">
-            Ссылка: <span id="shareUrl" style="color:#4dabf7; word-break:break-all">https://mushroom-runner.io/?ref=YOUR_ID</span>
+            Ссылка: <span id="shareUrl" style="color:#4dabf7; word-break:break-all">https://ghostnub96.github.io/mushroom-runner/?ref=YOUR_ID</span>
         </p>
         
         <div class="modal-buttons">
@@ -393,7 +393,7 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // === АНАЛИТИКА (простая, без сервера) ===
+    // === АНАЛИТИКА И БОНУС ОСНОВАТЕЛЯ ===
     const ANALYTICS = {
         sessionId: Date.now() + '_' + Math.random().toString(36).slice(2),
         startTime: Date.now(),
@@ -401,28 +401,54 @@
         referrals: 0
     };
     
-    function trackEvent(event, data = {}) {
-        // 🔧 В полной версии: отправка на сервер
-        // fetch('/api/track', { method: 'POST', body: JSON.stringify({ event, data, ...ANALYTICS }) });
-        console.log(`[ANALYTICS] ${event}`, { ...data, ...ANALYTICS });
-        
-        // Сохраняем в localStorage для демо
-        const history = JSON.parse(localStorage.getItem('mushroom_analytics') || '[]');
-        history.push({ ts: Date.now(), event, data, session: ANALYTICS.sessionId });
-        localStorage.setItem('mushroom_analytics', JSON.stringify(history.slice(-100))); // последние 100 событий
+    // Генерация уникального ID игрока
+    let playerId = localStorage.getItem('playerId');
+    if (!playerId) {
+        playerId = Math.random().toString(36).slice(2, 10);
+        localStorage.setItem('playerId', playerId);
     }
     
-    // При загрузке страницы
+    // 🔥 БОНУС ДЛЯ ПЕРВЫХ ИГРОКОВ 🔥
+    // Дата деплоя: 20 января 2026 (измени на свою дату!)
+    const DEPLOY_DATE = new Date('2026-01-20T00:00:00');
+    const NOW = new Date();
+    const DAYS_SINCE_DEPLOY = (NOW - DEPLOY_DATE) / (1000 * 60 * 60 * 24);
+    
+    function checkFounderBonus() {
+        // Если прошло меньше 7 дней с деплоя И игрок ещё не получил бонус
+        if (DAYS_SINCE_DEPLOY < 7 && !save.ownedSkins.includes('founder')) {
+            // Добавляем скин "Основатель" и 500 вёшенок
+            save.ownedSkins.push('founder');
+            save.veshenki += 500;
+            save.founderBonusReceived = true; // Флаг, чтобы не выдать дважды
+            commitSave();
+            
+            // Показываем сообщение с небольшой задержкой, чтобы игрок увидел меню
+            setTimeout(() => {
+                showText(W/2, H/2 - 50, '🎁 Ты один из первых!', 'referral-text');
+                setTimeout(() => {
+                    showText(W/2, H/2 + 20, '+500 🍄 и скин "Основатель" 👑', 'referral-text');
+                    playSfx('referral');
+                }, 800);
+            }, 1500);
+        }
+    }
+    
+    function trackEvent(event, data = {}) {
+        console.log(`[ANALYTICS] ${event}`, { ...data, playerId, session: ANALYTICS.sessionId });
+        const history = JSON.parse(localStorage.getItem('mushroom_analytics') || '[]');
+        history.push({ ts: Date.now(), event, data, playerId, session: ANALYTICS.sessionId });
+        localStorage.setItem('mushroom_analytics', JSON.stringify(history.slice(-100)));
+    }
+    
     trackEvent('page_load', { referrer: document.referrer, url: location.href });
     
     // Проверка реферальной ссылки
     const urlParams = new URLSearchParams(window.location.search);
     const referrerId = urlParams.get('ref');
-    if (referrerId && referrerId !== localStorage.getItem('myRefId')) {
-        // Друг пригласил!
+    if (referrerId && referrerId !== playerId) {
         localStorage.setItem('referredBy', referrerId);
         trackEvent('referral_received', { referrer: referrerId });
-        // Награда за приглашение (в демо - сразу)
         setTimeout(() => {
             showText(W/2, H/2, '🎁 Друг пригласил! +100 🍄', 'referral-text');
             save.veshenki += 100;
@@ -431,14 +457,11 @@
         }, 2000);
     }
     
-    // Генерация моего реферального ID
-    let myRefId = localStorage.getItem('myRefId');
-    if (!myRefId) {
-        myRefId = Math.random().toString(36).slice(2, 8);
-        localStorage.setItem('myRefId', myRefId);
-    }
-    document.getElementById('referralLink').innerText = `https://mushroom-runner.io/?ref=${myRefId}`;
-    document.getElementById('shareUrl').innerText = `https://mushroom-runner.io/?ref=${myRefId}`;
+    // Генерация моей реферальной ссылки
+    const myRefId = playerId;
+    const baseUrl = 'https://ghostnub96.github.io/mushroom-runner/';
+    document.getElementById('referralLink').innerText = `${baseUrl}?ref=${myRefId}`;
+    document.getElementById('shareUrl').innerText = `${baseUrl}?ref=${myRefId}`;
 
     // === АУДИО ===
     let audioCtx = null;
@@ -560,7 +583,8 @@
         activeSkin: 'classic',
         inventory: [],
         settings: { sound: true, music: true, jumpSound: true },
-        referralsGiven: 0
+        referralsGiven: 0,
+        founderBonusReceived: false
     };
     try {
         const s = localStorage.getItem('mushroom_demo_v1');
@@ -569,7 +593,7 @@
     settings = save.settings;
     updateSettingsUI();
 
-    // === СКИНЫ ===
+    // === СКИНЫ (добавлен скин "Основатель") ===
     const SKINS = {
         classic: { name: 'Классика', price: 0, type: 'free', stats: {jump:1.0,speed:1.0,grav:1.0}, draw: drawClassic },
         tophat: { name: 'Шляпник', price: 1500, type: 'free', stats: {jump:1.25,speed:1.0,grav:1.0}, draw: drawTophat },
@@ -577,6 +601,11 @@
         suit: { name: 'Деловой', price: 3000, type: 'free', stats: {jump:1.0,speed:1.0,grav:0.75}, draw: drawSuit },
         ninja: { name: 'Ниндзя', price: 5000, type: 'free', stats: {jump:1.3,speed:1.1,grav:0.9}, draw: drawNinja },
         king: { name: 'Король', price: 8000, type: 'free', stats: {jump:1.15,speed:1.05,grav:0.85}, draw: drawKing },
+        
+        // 🔥 НОВЫЙ: Скин "Основатель" (эксклюзив для ранних игроков)
+        founder: { name: 'Основатель 👑', price: 0, type: 'founder', stats: {jump:1.2,speed:1.1,grav:0.9}, draw: drawFounder },
+        
+        // В разработке
         cyber: { name: 'Кибер-гриб', price: 0, type: 'coming', stats: null, draw: null },
         pirate: { name: 'Пират', price: 0, type: 'coming', stats: null, draw: null },
         wizard: { name: 'Волшебник', price: 0, type: 'coming', stats: null, draw: null },
@@ -584,10 +613,50 @@
         samurai: { name: 'Самурай', price: 0, type: 'coming', stats: null, draw: null },
         chef: { name: 'Повар', price: 0, type: 'coming', stats: null, draw: null },
         detective: { name: 'Детектив', price: 0, type: 'coming', stats: null, draw: null },
+        
+        // Премиум
         golden: { name: 'Золотой гриб', price: 0, type: 'premium', stats: {jump:1.4,speed:1.2,grav:0.7}, draw: drawGolden },
         diamond: { name: 'Бриллиантовый', price: 0, type: 'premium', stats: {jump:1.5,speed:1.3,grav:0.6}, draw: drawDiamond },
         cosmic: { name: 'Космический', price: 0, type: 'premium', stats: {jump:1.6,speed:1.4,grav:0.5}, draw: drawCosmic }
     };
+
+    // 🔥 Отрисовка скина "Основатель"
+    function drawFounder(p) {
+        // Золотой корпус
+        ctx.fillStyle = '#d4af37';
+        ctx.fillRect(p.x+18, p.y+26, 12, 24);
+        ctx.beginPath();
+        ctx.ellipse(p.x+24, p.y+26, 26, 16, 0, Math.PI, 0);
+        ctx.fill();
+        
+        // Корона
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.moveTo(p.x+4, p.y+14);
+        ctx.lineTo(p.x+9, p.y+2);
+        ctx.lineTo(p.x+14, p.y+14);
+        ctx.lineTo(p.x+24, p.y);
+        ctx.lineTo(p.x+34, p.y+14);
+        ctx.lineTo(p.x+39, p.y+2);
+        ctx.lineTo(p.x+44, p.y+14);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Глаза-звёзды
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.moveTo(p.x+12, p.y+16);
+        ctx.lineTo(p.x+14, p.y+12);
+        ctx.lineTo(p.x+16, p.y+16);
+        ctx.lineTo(p.x+12, p.y+16);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(p.x+36, p.y+16);
+        ctx.lineTo(p.x+38, p.y+12);
+        ctx.lineTo(p.x+40, p.y+16);
+        ctx.lineTo(p.x+36, p.y+16);
+        ctx.fill();
+    }
 
     function drawGolden(p) {
         ctx.fillStyle = '#d4af37'; ctx.fillRect(p.x+18, p.y+26, 12, 24);
@@ -837,10 +906,12 @@
             const active = save.activeSkin === key;
             const isComing = skin.type === 'coming';
             const isPremium = skin.type === 'premium';
+            const isFounder = skin.type === 'founder';
             
             const div = document.createElement('div');
-            div.className = `skin-card ${active?'active':''} ${!owned && !isComing?'locked':''} ${isComing?'coming-soon':''} ${isPremium?'premium':''}`;
-            if (isPremium) div.innerHTML += '<div class="demo-badge">ДЕМО</div>';
+            div.className = `skin-card ${active?'active':''} ${!owned && !isComing && !isFounder?'locked':''} ${isComing?'coming-soon':''} ${isPremium?'premium':''}`;
+            if (isPremium) div.innerHTML += '<div class="demo-badge">PREMIUM</div>';
+            if (isFounder && !owned) div.innerHTML += '<div class="demo-badge">EARLY</div>';
             
             if (!isComing) {
                 const cv = document.createElement('canvas'); cv.width=50; cv.height=60; cv.className='skin-preview';
@@ -853,16 +924,19 @@
             if (isComing) {
                 div.innerHTML += `<div class="skin-name">${skin.name}</div><div class="skin-soon">В разработке</div>`;
             } else {
-                if (!owned && !isPremium) div.innerHTML += `<div class="skin-price">${skin.price}</div>`;
+                if (!owned && !isPremium && !isFounder) div.innerHTML += `<div class="skin-price">${skin.price}</div>`;
                 if (isPremium) div.innerHTML += `<div class="skin-price">PREMIUM</div>`;
+                if (isFounder && !owned) div.innerHTML += `<div class="skin-price">EARLY</div>`;
+                
                 div.innerHTML += `<div class="skin-name">${skin.name}</div>
                     <div class="stats-wrap"><div class="skin-stats"> Прыжок: ${skin.stats?`x${skin.stats.jump}`:'—'}<br>⚡ Скорость: ${skin.stats?`x${skin.stats.speed}`:'—'}<br> Гравитация: ${skin.stats?`x${skin.stats.grav}`:'—'}</div></div>
-                    <div class="skin-status">${owned?(active?'✓ ВЫБРАНО':'КУПЛЕНО'):(isPremium?'💎 Скоро':'ЗАКРЫТО')}</div>`;
+                    <div class="skin-status">${owned?(active?'✓ ВЫБРАНО':'КУПЛЕНО'):(isPremium?'💎 Скоро':(isFounder?'🎁 Только для первых':'ЗАКРЫТО'))}</div>`;
             }
             
             div.onclick = () => {
                 if (isComing) { showText(W/2, H/2, 'Скоро в обновлении!', 'bonus-text'); return; }
                 if (isPremium) { showText(W/2, H/2, 'Доступно в полной версии', 'bonus-text'); return; }
+                if (isFounder && !owned) { showText(W/2, H/2, 'Только для ранних игроков', 'bonus-text'); return; }
                 if (owned) { save.activeSkin=key; commitSave(); playSfx('buy'); renderSkins(); }
                 else if (save.veshenki >= skin.price) {
                     save.veshenki -= skin.price; save.ownedSkins.push(key); save.activeSkin=key;
@@ -935,6 +1009,7 @@
     function startGame() {
         initAudio(); 
         trackEvent('game_start');
+        checkFounderBonus(); // 🔥 Проверяем бонус основателя при старте игры
         showScreen('mainMenu'); document.getElementById('mainMenu').classList.add('hidden');
         document.getElementById('hud').style.display='flex'; resetGame(); state='PLAY'; loop();
     }
@@ -1082,7 +1157,7 @@
     }
     
     function shareTo(platform) {
-        const url = `https://mushroom-runner.io/?ref=${myRefId}`;
+        const url = `${baseUrl}?ref=${myRefId}`;
         const text = `🍄 Я играю в Mushroom Runner! Присоединяйся: ${url}`;
         
         let shareUrl = '';
@@ -1093,7 +1168,6 @@
         if (shareUrl) {
             window.open(shareUrl, '_blank');
             trackEvent('share_click', { platform });
-            // Бонус за попытку поделиться (в демо)
             if (!localStorage.getItem('shared_' + myRefId)) {
                 localStorage.setItem('shared_' + myRefId, '1');
                 setTimeout(() => {
@@ -1110,7 +1184,7 @@
     }
     
     function copyLink() {
-        const url = `https://mushroom-runner.io/?ref=${myRefId}`;
+        const url = `${baseUrl}?ref=${myRefId}`;
         navigator.clipboard.writeText(url).then(() => {
             showText(W/2, H/2, '🔗 Ссылка скопирована!', 'bonus-text');
             trackEvent('link_copied');
@@ -1119,7 +1193,7 @@
     }
     
     function copyReferral() {
-        const url = `https://mushroom-runner.io/?ref=${myRefId}`;
+        const url = `${baseUrl}?ref=${myRefId}`;
         navigator.clipboard.writeText(url).then(() => {
             showText(W/2, H/2, '🔗 Реферальная ссылка скопирована!', 'bonus-text');
         });
@@ -1127,21 +1201,18 @@
 
     // === СОЦИАЛЬНЫЕ ЭЛЕМЕНТЫ (демо-данные) ===
     function updateSocialProof() {
-        // 🔧 В полной версии: реальные данные с сервера
-        // Для демо: рандомные числа в разумных пределах
         const online = 50 + Math.floor(Math.random() * 200);
         const shares = 10 + Math.floor(Math.random() * 100);
         document.getElementById('onlineCount').innerText = online;
         document.getElementById('sharesCount').innerText = shares;
     }
-    setInterval(updateSocialProof, 30000); // обновлять каждые 30 сек
+    setInterval(updateSocialProof, 30000);
 
     // === ИНИЦИАЛИЗАЦИЯ ===
     updateUI();
     updateSocialProof();
     ctx.strokeStyle='#fff'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(0,GROUND_Y); ctx.lineTo(W,GROUND_Y); ctx.stroke();
     
-    // Трекаем сессию при закрытии
     window.addEventListener('beforeunload', () => {
         const duration = Math.round((Date.now() - ANALYTICS.startTime) / 1000);
         trackEvent('session_end', { duration, pageViews: ANALYTICS.pageViews });
