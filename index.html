@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mushroom Runner — Демо</title>
-    <meta name="description" content="Беги за грибом! Бесплатная браузерная игра.">
+    <title>Mushroom Runner</title>
+    <meta name="description" content="Run as a mushroom! Free browser game.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body { background: #111; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
@@ -27,35 +27,17 @@
             font-family: inherit; text-transform: uppercase;
         }
         .hud-btn:hover { background: #ccc; }
-        .share-btn {
-            background: linear-gradient(135deg, #4dabf7, #74c0fc); color: #000;
-            border: none; padding: 6px 12px; font-size: 14px; font-weight: bold;
-            cursor: pointer; font-family: inherit; border-radius: 6px;
-        }
-        .share-btn:hover { filter: brightness(1.1); }
         
-        /* Баффы */
-        .buff-bar {
-            position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 15px; pointer-events: none; z-index: 11;
-        }
-        .buff {
-            background: #000; color: #fff; padding: 6px 12px; border-radius: 15px;
-            font-size: 13px; display: none; align-items: center; gap: 6px; border: 1px solid #444;
-        }
-        .buff.active { display: flex; animation: pulse 0.8s infinite alternate; }
-        @keyframes pulse { from { opacity: 0.8; } to { opacity: 1; transform: scale(1.05); } }
-
         /* Экраны */
         .overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(20,20,20,0.98); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 20; color: #fff;
-            overflow-y: auto;
+            overflow-y: auto; padding: 20px;
         }
         .hidden { display: none !important; }
         
-        h1 { font-size: 38px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
+        h1 { font-size: 38px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; color: #fff; text-align: center; }
         h2 { font-size: 28px; margin-bottom: 15px; text-align: center; color: #fff; }
         p { font-size: 16px; margin: 6px 0; font-weight: bold; text-align: center; color: #ddd; }
         
@@ -67,10 +49,9 @@
         .btn:hover { background: #000; color: #fff; border-color: #fff; }
         .btn-small { width: 180px; padding: 6px 12px; font-size: 14px; margin: 4px; background: #fff; color: #000; border: 2px solid #fff; }
         .btn-small:hover { background: #000; color: #fff; }
-        .btn-disabled { background: #444; color: #888; cursor: not-allowed; border-color: #666; }
-        .btn-disabled:hover { background: #444; }
         .btn-outline { background: transparent; border: 2px solid #fff; color: #fff; }
         .btn-outline:hover { background: #fff; color: #000; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
         
         .back-btn {
             position: absolute; top: 15px; left: 15px; background: #fff; color: #000; border: 2px solid #fff;
@@ -78,17 +59,7 @@
         }
         .back-btn:hover { background: #ccc; }
 
-        /* Вкладки */
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
-        .tab {
-            padding: 8px 16px; background: #333; color: #aaa; border: none; cursor: pointer;
-            font-family: inherit; font-weight: bold; border-radius: 5px 5px 0 0;
-        }
-        .tab.active { background: #fff; color: #000; }
-        .tab-content { display: none; width: 100%; max-width: 900px; }
-        .tab-content.active { display: block; }
-
-        /* Формы ввода */
+        /* Формы */
         .input-group { margin: 15px 0; width: 100%; max-width: 300px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #aaa; }
         .input-group input {
@@ -97,191 +68,29 @@
         }
         .input-group input:focus { outline: none; border-color: #4dabf7; }
 
-        /* Рейтинг / Таблица лидеров */
-        .leaderboard {
-            width: 100%; max-width: 500px; margin: 0 auto;
-            background: #222; border-radius: 12px; padding: 15px;
-        }
-        .leaderboard-header {
-            display: grid; grid-template-columns: 50px 1fr 100px; gap: 10px;
-            padding: 10px; border-bottom: 2px solid #444; font-weight: bold; color: #aaa;
-        }
-        .leaderboard-row {
-            display: grid; grid-template-columns: 50px 1fr 100px; gap: 10px;
-            padding: 12px 10px; border-bottom: 1px solid #333; align-items: center;
-            transition: background 0.2s;
-        }
-        .leaderboard-row:hover { background: #2a2a2a; }
-        .leaderboard-row.top1 { background: linear-gradient(90deg, transparent, #ffd70020, transparent); border-left: 3px solid #ffd700; }
-        .leaderboard-row.top2 { background: linear-gradient(90deg, transparent, #c0c0c020, transparent); border-left: 3px solid #c0c0c0; }
-        .leaderboard-row.top3 { background: linear-gradient(90deg, transparent, #cd7f3220, transparent); border-left: 3px solid #cd7f32; }
+        /* Рейтинг */
+        .leaderboard { width: 100%; max-width: 500px; margin: 0 auto; background: #222; border-radius: 12px; padding: 15px; }
+        .leaderboard-header { display: grid; grid-template-columns: 50px 1fr 80px; gap: 10px; padding: 10px; border-bottom: 2px solid #444; font-weight: bold; color: #aaa; }
+        .leaderboard-row { display: grid; grid-template-columns: 50px 1fr 80px; gap: 10px; padding: 12px 10px; border-bottom: 1px solid #333; align-items: center; }
         .rank { font-weight: bold; font-size: 18px; }
-        .rank.top1 { color: #ffd700; text-shadow: 0 0 10px #ffd70050; }
-        .rank.top2 { color: #c0c0c0; }
-        .rank.top3 { color: #cd7f32; }
+        .rank.top1 { color: #ffd700; } .rank.top2 { color: #c0c0c0; } .rank.top3 { color: #cd7f32; }
         .player-info { display: flex; align-items: center; gap: 10px; }
-        .player-avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: linear-gradient(135deg, #4dabf7, #74c0fc);
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px;
-        }
-        .player-name { font-weight: 500; }
-        .player-name.me { color: #4dabf7; }
+        .player-avatar { width: 32px; height: 32px; border-radius: 50%; background: #4dabf7; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .score { text-align: right; font-weight: bold; color: #d4af37; }
-        .medal { font-size: 20px; }
-        
-        .leaderboard-footer {
-            text-align: center; padding: 15px; color: #666; font-size: 12px;
-        }
-        .pagination {
-            display: flex; justify-content: center; gap: 5px; margin-top: 15px;
-        }
-        .page-btn {
-            padding: 5px 12px; background: #333; color: #fff; border: none;
-            border-radius: 4px; cursor: pointer; font-family: inherit;
-        }
-        .page-btn.active { background: #4dabf7; color: #000; }
-        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Кастомизация */
-        .skin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-        .skin-card {
-            border: 3px solid #444; padding: 10px; text-align: center; cursor: pointer; position: relative;
-            background: #222; transition: 0.2s; color: #fff;
-        }
-        .skin-card:hover { border-color: #d4af37; transform: translateY(-3px); }
-        .skin-card.active { border-color: #d4af37; border-width: 4px; background: #2a2a1a; }
-        .skin-card.locked { opacity: 0.6; cursor: not-allowed; }
-        .skin-card.coming-soon { border-style: dashed; }
-        .skin-card.premium { border-color: #d4af37; background: linear-gradient(135deg, #2a2a1a, #1a1a0a); }
-        .skin-card.premium::before {
-            content: '💎'; position: absolute; top: -8px; right: -8px;
-            background: #d4af37; color: #000; width: 24px; height: 24px;
-            border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center;
-        }
-        .skin-price {
-            position: absolute; top: 4px; right: 4px; background: #d4af37; color: #000;
-            padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 8px;
-        }
-        .skin-preview { width: 50px; height: 60px; margin: 0 auto 6px; background: #111; border: 2px solid #555; border-radius: 5px; opacity: 0; height: 0; overflow: hidden; transition: all 0.3s; }
-        .skin-card:hover .skin-preview { opacity: 1; height: 60px; }
-        .skin-stats { opacity: 1; transition: opacity 0.3s; font-size: 11px; color: #aaa; margin-top: 4px; line-height: 1.3; }
-        .skin-card:hover .skin-stats { opacity: 0; }
-        .skin-name { font-weight: bold; font-size: 13px; margin-top: 5px; }
-        .skin-status { font-size: 11px; color: #666; margin-top: 3px; }
-        .skin-soon { font-size: 10px; color: #888; font-style: italic; }
-        .demo-badge {
-            position: absolute; top: -10px; left: -10px;
-            background: #e63946; color: #fff; padding: 3px 8px;
-            font-size: 10px; font-weight: bold; border-radius: 8px;
-        }
+        /* Privacy Text */
+        .privacy-text { font-size: 13px; color: #aaa; text-align: left; margin: 15px 0; padding: 10px; background: #111; border: 1px solid #444; line-height: 1.4; }
 
-        /* Инвентарь и магазин */
-        .inventory-grid, .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
-        .item-card {
-            border: 2px solid #444; padding: 12px; background: #222; border-radius: 8px;
-            text-align: center; color: #fff; position: relative;
-        }
-        .item-card.premium { border-color: #d4af37; background: linear-gradient(135deg, #2a2a1a, #1a1a0a); }
-        .item-icon { font-size: 32px; margin-bottom: 8px; }
-        .item-name { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-        .item-desc { font-size: 11px; color: #aaa; margin-bottom: 8px; min-height: 30px; }
-        .item-price { font-size: 13px; font-weight: bold; }
-        .item-price.veshenki { color: #d4af37; }
-        .item-btn {
-            margin-top: 8px; padding: 6px 12px; font-size: 12px;
-            background: #fff; color: #000; border: none; cursor: pointer; font-weight: bold;
-        }
-        .item-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
-        .item-owned { color: #69db7c; font-weight: bold; }
+        /* Language Switcher */
+        .lang-btn { background: #333; color: #fff; border: 1px solid #555; padding: 5px 10px; cursor: pointer; font-family: inherit; font-weight: bold; }
+        .lang-btn.active { background: #fff; color: #000; }
 
-        /* Социальные элементы */
-        .social-proof {
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.7); color: #fff; padding: 8px 16px;
-            border-radius: 20px; font-size: 13px; z-index: 9;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .social-proof span { animation: pulse 2s infinite; }
+        /* Bonus Text */
+        .bonus-text { position: absolute; color: #d4af37; font-weight: bold; font-size: 22px; pointer-events: none; animation: floatUp 0.7s ease-out forwards; text-shadow: 2px 2px 0 #000; z-index: 13; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-40px) scale(1.3); } }
 
-        /* Модальные окна */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
-            z-index: 100; display: none;
-        }
-        .modal-content {
-            background: #222; border: 3px solid #fff; padding: 25px; border-radius: 12px;
-            max-width: 450px; width: 90%; color: #fff; text-align: center;
-        }
-        .modal h3 { margin-bottom: 15px; color: #4dabf7; }
-        .modal p { margin: 8px 0; font-size: 14px; color: #ccc; }
-        .modal textarea {
-            width: 100%; height: 80px; background: #111; border: 1px solid #444;
-            color: #4dabf7; padding: 10px; font-family: monospace; margin: 10px 0;
-            resize: none;
-        }
-        .share-options { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
-        .share-option {
-            width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px; cursor: pointer; transition: transform 0.2s;
-        }
-        .share-option:hover { transform: scale(1.1); }
-        .share-tg { background: #0088cc; }
-        .share-vk { background: #0077ff; }
-        .share-wa { background: #25d366; }
-        .share-copy { background: #6c757d; }
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .modal-btn {
-            padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer;
-            border: none; border-radius: 6px; font-family: inherit;
-        }
-        .modal-btn.confirm { background: #4dabf7; color: #000; }
-        .modal-btn.cancel { background: #444; color: #fff; }
-        .modal-btn.secondary { background: #6c757d; color: #fff; }
-
-        /* Уровень */
-        #levelOverlay {
-            position: absolute; top: 25%; left: 50%; transform: translateX(-50%);
-            font-size: 56px; font-weight: bold; text-transform: uppercase;
-            background: rgba(0,0,0,0.8); color: #fff; padding: 15px 30px; border: 4px solid #fff;
-            z-index: 15; pointer-events: none; display: none;
-        }
-
-        .bonus-text {
-            position: absolute; color: #d4af37; font-weight: bold; font-size: 22px;
-            pointer-events: none; animation: floatUp 0.7s ease-out forwards;
-            text-shadow: 2px 2px 0 #000; z-index: 13;
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
-        }
-        .jump-text {
-            position: absolute; color: #fff; font-weight: bold; font-size: 18px;
-            pointer-events: none; animation: jumpText 0.4s ease-out forwards; z-index: 13;
-        }
-        @keyframes jumpText {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-25px); }
-        }
-        .referral-text {
-            position: absolute; color: #4dabf7; font-weight: bold; font-size: 16px;
-            pointer-events: none; animation: floatUp 1s ease-out forwards;
-            text-shadow: 1px 1px 0 #000; z-index: 13;
-        }
-        
-        /* Профиль */
-        .profile-badge {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px;
-        }
-        .profile-avatar {
-            width: 24px; height: 24px; background: #4dabf7; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;
-        }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: #222; border: 3px solid #fff; padding: 25px; border-radius: 12px; max-width: 450px; width: 90%; color: #fff; text-align: center; }
     </style>
 </head>
 <body>
@@ -289,273 +98,226 @@
 <div id="gameContainer">
     <canvas id="game"></canvas>
     
-    <div id="hud">
+    <div id="hud" class="hidden">
         <div class="hud-col">
-            <div style="display:flex; gap:10px; align-items:center;">
-                <button class="hud-btn" onclick="goToMenu()">МЕНЮ</button>
-                <div class="profile-badge" onclick="openProfileModal()" style="cursor:pointer;">
-                    <div class="profile-avatar" id="profileAvatar">🍄</div>
-                    <span id="profileName">Гость</span>
-                </div>
-            </div>
-            <span>СЧЁТ: <span id="currentScore">0</span></span>
-            <span class="currency"> <span id="currencyDisplay">0</span></span>
+            <button class="hud-btn" data-i18n="btn_menu" onclick="goToMenu()">MENU</button>
+            <span><span data-i18n="lbl_score">SCORE</span>: <span id="currentScore">0</span></span>
+            <span class="currency">🍄 <span id="currencyDisplay">0</span></span>
         </div>
         <div class="hud-col right">
-            <button class="share-btn" onclick="openSaveModal()">💾 Сохранить</button>
-            <span>УРОВЕНЬ: <span id="levelDisplay">1</span></span>
-            <button class="hud-btn" onclick="togglePause()">⏸ ПАУЗА</button>
+            <span><span data-i18n="lbl_level">LEVEL</span>: <span id="levelDisplay">1</span></span>
+            <button class="hud-btn" data-i18n="btn_pause" onclick="togglePause()">PAUSE</button>
         </div>
     </div>
 
-    <div class="buff-bar">
-        <div class="buff" id="buffShield">🛡️ ЩИТ <span id="buffShieldTime">0</span>с</div>
-        <div class="buff" id="buffSuper">🚀 СУПЕР <span id="buffSuperCount">0</span>/20</div>
-        <div class="buff" id="buffMonsterTimer"> МОНСТР <span id="buffMonsterTime">0</span>с</div>
-    </div>
-
-    <div class="social-proof">
-        <span>🎮 <span id="onlineCount">127</span> игроков онлайн</span>
-        <span>•</span>
-        <span>🏆 <span id="myRankDisplay">-</span> место в рейтинге</span>
-    </div>
-
-    <!-- Экран входа / регистрации -->
+    <!-- Экран авторизации -->
     <div id="authScreen" class="overlay">
-        <h1>ГРИБ БЕЖИТ <span style="font-size:16px; color:#4dabf7">[ДЕМО]</span></h1>
-        
-        <div id="loginForm">
-            <p style="margin-bottom:20px; color:#aaa">Войди, чтобы сохранить прогресс и попасть в рейтинг</p>
+        <h1 data-i18n="game_title">MUSHROOM RUNNER</h1>
+        <div style="width:100%; max-width:300px; text-align:center;">
+            <p data-i18n="auth_desc">Login to save progress</p>
             <div class="input-group">
-                <label>Твой никнейм</label>
-                <input type="text" id="usernameInput" placeholder="Например: Грибник96" maxlength="15">
+                <label data-i18n="lbl_email">Email</label>
+                <input type="email" id="emailInput" placeholder="player@example.com">
             </div>
-            <button class="btn" onclick="handleLogin()">🎮 Начать игру</button>
-            <p style="margin-top:15px; font-size:12px; color:#666">
-                Прогресс сохраняется в браузере.<br>
-                Используй "Код сохранения" для переноса на другое устройство.
-            </p>
+            <button class="btn" data-i18n="btn_start" onclick="handleLogin()">START GAME</button>
+            
+            <div style="margin-top:20px;">
+                <button class="btn-outline" style="font-size:12px; padding:5px 10px;" onclick="showPrivacyPolicy()" data-i18n="btn_privacy">Privacy Policy</button>
+            </div>
         </div>
     </div>
 
     <!-- Главное меню -->
     <div id="mainMenu" class="overlay hidden">
-        <h1>ГРИБ БЕЖИТ <span style="font-size:16px; color:#4dabf7">[ДЕМО]</span></h1>
-        <button class="btn" onclick="startGame()">🎮 Играть</button>
-        <button class="btn" onclick="showScreen('custom')">🎨 Скины</button>
-        <button class="btn" onclick="showScreen('leaderboard')">🏆 Рейтинг</button>
-        <button class="btn" onclick="showScreen('shop')">🛒 Магазин <span style="font-size:10px; color:#888">(скоро)</span></button>
-        <button class="btn" onclick="showScreen('inventory')">🎒 Инвентарь</button>
-        <button class="btn" onclick="showScreen('settings')">⚙️ Настройки</button>
-        <button class="btn btn-disabled" title="Доступно после регистрации ИП">💎 Премиум (скоро)</button>
+        <h1 data-i18n="game_title">MUSHROOM RUNNER</h1>
         
-        <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
-            <button class="btn btn-small btn-outline" onclick="openSaveModal()">💾 Код сохранения</button>
-            <button class="btn btn-small btn-outline" onclick="openLoadModal()">📥 Загрузить код</button>
+        <div class="btn-group">
+            <button class="lang-btn" id="langRu" onclick="setLanguage('ru')">RU</button>
+            <button class="lang-btn" id="langEn" onclick="setLanguage('en')">EN</button>
         </div>
+
+        <button class="btn" data-i18n="btn_play" onclick="startGame()">PLAY</button>
+        <button class="btn" data-i18n="btn_leaderboard" onclick="showScreen('leaderboard')">LEADERBOARD</button>
+        <button class="btn" data-i18n="btn_settings" onclick="showScreen('settings')">SETTINGS</button>
         
-        <p style="margin-top:15px; font-size:12px; color:#666">
-            🔗 Пригласи друга: <span id="referralLink" style="color:#4dabf7; cursor:pointer" onclick="copyReferral()">[копировать]</span>
-        </p>
+        <div style="margin-top:15px;">
+            <button class="btn-small btn-outline" data-i18n="btn_save_code" onclick="openSaveModal()">SAVE CODE</button>
+            <button class="btn-small btn-outline" data-i18n="btn_load_code" onclick="openLoadModal()">LOAD CODE</button>
+        </div>
     </div>
 
     <!-- Рейтинг -->
     <div id="leaderboard" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🏆 ТАБЛИЦА ЛИДЕРОВ</h2>
-        <p style="color:#aaa; margin-bottom:15px">Топ-100 игроков по лучшему счёту</p>
-        
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="back">Back</span></button>
+        <h2 data-i18n="title_leaderboard">🏆 LEADERBOARD</h2>
+        <p style="color:#aaa; margin-bottom:15px" data-i18n="sub_leaderboard">Top 100 players</p>
         <div class="leaderboard">
             <div class="leaderboard-header">
-                <span>Место</span>
-                <span>Игрок</span>
-                <span>Счёт</span>
+                <span>#</span>
+                <span data-i18n="lbl_player">Player</span>
+                <span data-i18n="lbl_score">Score</span>
             </div>
             <div id="leaderboardRows"></div>
-            <div class="pagination" id="pagination"></div>
-            <div class="leaderboard-footer">
-                <p>🔧 Демо-режим: рейтинг локальный</p>
-                <p style="margin-top:5px">В полной версии — глобальный рейтинг всех игроков</p>
-            </div>
         </div>
-    </div>
-
-    <!-- Кастомизация -->
-    <div id="custom" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🎨 СКИНЫ</h2>
-        <p style="color:#d4af37; font-size:18px">💰 БАЛАНС: <span id="customBalance">0</span> </p>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('skins', this)">Скины</button>
-            <button class="tab" onclick="switchTab('inventory', this)">Инвентарь</button>
-        </div>
-        
-        <div id="tab-skins" class="tab-content active">
-            <div class="skin-grid" id="skinGrid"></div>
-        </div>
-        
-        <div id="tab-inventory" class="tab-content">
-            <div class="inventory-grid" id="inventoryGrid"></div>
-            <p style="margin-top:20px; font-size:12px; color:#666">
-                Здесь будут храниться бонусы.<br>
-                Функционал в разработке.
-            </p>
-        </div>
-    </div>
-
-    <!-- Магазин (демо-режим) -->
-    <div id="shop" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🛒 МАГАЗИН <span style="font-size:16px; color:#888">[ДЕМО]</span></h2>
-        <p style="color:#d4af37; font-size:16px">💰 : <span id="shopBalance">0</span></p>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="switchShopTab('veshenki', this)">За </button>
-            <button class="tab" onclick="switchShopTab('premium', this)">💎 Премиум</button>
-        </div>
-        
-        <div id="shop-veshenki" class="tab-content active">
-            <div class="shop-grid" id="shopVeshenki"></div>
-            <p style="margin-top:15px; font-size:12px; color:#666">
-                💡 В демо-версии покупки отключены.<br>
-                Все предметы можно получить бесплатно во время игры!
-            </p>
-        </div>
-        <div id="shop-premium" class="tab-content">
-            <div style="text-align:center; padding:30px;">
-                <div style="font-size:48px; margin-bottom:15px">💎</div>
-                <h3 style="margin-bottom:10px">Премиум-подписка</h3>
-                <p style="color:#aaa; margin-bottom:20px">Эксклюзивные скины и бонусы</p>
-                <button class="btn btn-disabled" disabled>Оформить (скоро)</button>
-                <p style="margin-top:15px; font-size:11px; color:#666">
-                    🔐 Для приёма платежей требуется регистрация ИП.<br>
-                    Следите за обновлениями!
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Инвентарь -->
-    <div id="inventory" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>🎒 ИНВЕНТАРЬ</h2>
-        <p style="color:#d4af37">💰 : <span id="invBalance">0</span></p>
-        <div class="inventory-grid" id="fullInventoryGrid"></div>
-        <p style="margin-top:20px; font-size:12px; color:#666">
-            Предметы появляются после нахождения в игре.<br>
-            Магазин будет доступен после запуска полной версии.
-        </p>
+        <div style="margin-top:15px; font-size:12px; color:#666;" data-i18n="footer_leaderboard">Demo mode: local rating</div>
     </div>
 
     <!-- Настройки -->
     <div id="settings" class="overlay hidden">
-        <button class="back-btn" onclick="goToMenu()">← Назад</button>
-        <h2>⚙️ НАСТРОЙКИ</h2>
-        <button class="btn-small" id="soundBtn" onclick="toggleSetting('sound')">ЗВУК: ВКЛ</button>
-        <button class="btn-small" id="musicBtn" onclick="toggleSetting('music')">МУЗЫКА: ВКЛ</button>
-        <button class="btn-small" id="jumpSoundBtn" onclick="toggleSetting('jumpSound')">ПРЫЖКИ: ВКЛ</button>
-        <button class="btn-small btn-outline" onclick="logout()" style="margin-top:20px; border-color:#e63946; color:#e63946;">🚪 Выйти из аккаунта</button>
-        <p style="margin-top:20px; font-size:11px; color:#666">
-            Версия: 0.9.3 (демо + рейтинг)<br>
-            <a href="#" onclick="alert('Демо-версия. Рейтинг локальный. В полной версии — глобальный.'); return false;" style="color:#4dabf7">О рейтинге</a>
-        </p>
+        <button class="back-btn" onclick="goToMenu()">← <span data-i18n="back">Back</span></button>
+        <h2 data-i18n="title_settings">⚙️ SETTINGS</h2>
+        <div style="margin-top:20px;">
+            <button class="btn-small" id="soundBtn" onclick="toggleSetting('sound')">SOUND: ON</button><br><br>
+            <button class="btn-small" id="musicBtn" onclick="toggleSetting('music')">MUSIC: ON</button><br><br>
+            <button class="btn-small" id="jumpSoundBtn" onclick="toggleSetting('jumpSound')">JUMP SFX: ON</button><br><br>
+            <button class="btn-small btn-outline" onclick="logout()" style="border-color:#e63946; color:#e63946;" data-i18n="btn_logout">LOGOUT</button>
+        </div>
     </div>
 
-    <!-- Пауза -->
-    <div id="pauseMenu" class="overlay hidden">
-        <h2>ПАУЗА</h2>
-        <button class="btn" onclick="togglePause()">▶ Продолжить</button>
-        <button class="btn" onclick="goToMenu(); togglePause();">🏠 В меню</button>
-    </div>
-
-    <!-- Проигрыш/Победа -->
+    <!-- Проигрыш -->
     <div id="gameOverScreen" class="overlay hidden">
-        <h1 id="endTitle">ВРЕЗАЛСЯ</h1>
-        <p>СЧЁТ: <span id="finalScore">0</span></p>
-        <p style="color:#d4af37">ЗАРАБОТАНО: +<span id="sessionVeshenki">0</span> </p>
-        <p>БАЛАНС: <span id="totalVeshenki">0</span> 🍄</p>
-        <div id="newRecord" style="color:#ffd700; font-weight:bold; margin:10px 0; display:none;">🎉 НОВЫЙ РЕКОРД!</div>
-        <button class="btn" onclick="restartGame()">🔄 Повторить</button>
-        <button class="btn" onclick="goToMenu()">🏠 В меню</button>
-        <button class="btn" style="background:#4dabf7; color:#000" onclick="openSaveModal()">💾 Сохранить прогресс</button>
+        <h1 id="endTitle" data-i18n="title_crash">CRASHED!</h1>
+        <p><span data-i18n="lbl_score">Score</span>: <span id="finalScore">0</span></p>
+        <p style="color:#d4af37">+<span id="sessionVeshenki">0</span> 🍄</p>
+        <div id="newRecord" style="color:#ffd700; font-weight:bold; margin:10px 0; display:none;" data-i18n="msg_new_record"> NEW RECORD!</div>
+        <button class="btn" data-i18n="btn_retry" onclick="restartGame()">RETRY</button>
+        <button class="btn" data-i18n="btn_menu" onclick="goToMenu()">MENU</button>
     </div>
 
-    <div id="levelOverlay">УРОВЕНЬ 2</div>
+    <div id="levelOverlay" style="display:none; position:absolute; top:25%; left:50%; transform:translateX(-50%); font-size:50px; font-weight:bold; background:rgba(0,0,0,0.8); color:#fff; padding:15px; border:4px solid #fff;">LEVEL 2</div>
 </div>
 
-<!-- Модальное окно: Код сохранения -->
+<!-- Модальные окна -->
 <div id="saveModal" class="modal">
     <div class="modal-content">
-        <h3>💾 Код сохранения</h3>
-        <p style="font-size:13px; color:#aaa">Скопируй этот код, чтобы перенести прогресс на другое устройство:</p>
-        <textarea id="saveCodeOutput" readonly onclick="this.select()"></textarea>
-        <div class="modal-buttons">
-            <button class="modal-btn secondary" onclick="copySaveCode()">📋 Копировать</button>
-            <button class="modal-btn cancel" onclick="closeSaveModal()">Закрыть</button>
+        <h3 data-i18n="modal_save_title">💾 Save Code</h3>
+        <textarea id="saveCodeOutput" readonly style="width:100%; height:60px; background:#111; color:#fff; border:1px solid #444; margin:10px 0;"></textarea>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button class="btn-small" onclick="copySaveCode()" data-i18n="btn_copy">COPY</button>
+            <button class="btn-small" onclick="document.getElementById('saveModal').style.display='none'" data-i18n="btn_close">CLOSE</button>
         </div>
-        <p style="margin-top:15px; font-size:11px; color:#666">
-            ⚠️ Не показывай код посторонним — он даёт доступ к твоему прогрессу!
-        </p>
     </div>
 </div>
 
-<!-- Модальное окно: Загрузить код -->
 <div id="loadModal" class="modal">
     <div class="modal-content">
-        <h3>📥 Загрузить прогресс</h3>
-        <p style="font-size:13px; color:#aaa">Вставь код сохранения, полученный с другого устройства:</p>
-        <textarea id="saveCodeInput" placeholder="Вставь код сюда..."></textarea>
-        <div class="modal-buttons">
-            <button class="modal-btn confirm" onclick="loadSaveCode()">✅ Загрузить</button>
-            <button class="modal-btn cancel" onclick="closeLoadModal()">Отмена</button>
+        <h3 data-i18n="modal_load_title">📥 Load Code</h3>
+        <textarea id="saveCodeInput" placeholder="Paste code here..." style="width:100%; height:60px; background:#111; color:#fff; border:1px solid #444; margin:10px 0;"></textarea>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button class="btn-small" onclick="loadSaveCode()" data-i18n="btn_load">LOAD</button>
+            <button class="btn-small" onclick="document.getElementById('loadModal').style.display='none'" data-i18n="btn_close">CLOSE</button>
         </div>
-        <p id="loadStatus" style="margin-top:10px; font-size:12px; min-height:16px;"></p>
+        <p id="loadStatus" style="margin-top:10px; font-size:12px;"></p>
     </div>
 </div>
 
-<!-- Модальное окно: Профиль -->
-<div id="profileModal" class="modal">
-    <div class="modal-content">
-        <h3>👤 Профиль: <span id="modalUsername">Гость</span></h3>
-        <div style="text-align:left; margin:15px 0; font-size:14px;">
-            <p>🏆 Лучший счёт: <span id="modalBestScore" style="color:#d4af37; font-weight:bold">0</span></p>
-            <p>🌍 Место в рейтинге: <span id="modalRank" style="color:#4dabf7; font-weight:bold">-</span></p>
-            <p>💰 Вёшенок: <span id="modalBalance" style="color:#d4af37; font-weight:bold">0</span></p>
-            <p>🎨 Открыто скинов: <span id="modalSkinsCount" style="color:#d4af37; font-weight:bold">0</span></p>
+<div id="privacyModal" class="modal">
+    <div class="modal-content" style="text-align:left; max-height:80vh; overflow-y:auto;">
+        <h3 data-i18n="title_privacy" style="text-align:center; margin-bottom:15px;">PRIVACY POLICY</h3>
+        <div class="privacy-text" data-i18n="privacy_content">
+            <strong>Data Storage:</strong> In this demo version, your email, progress, and score are stored exclusively in your browser's LocalStorage. No data is sent to any server.<br><br>
+            <strong>Usage:</strong> We use the email solely as a unique identifier to save your game progress locally.<br><br>
+            <strong>Future Updates:</strong> In future versions with a backend, your email may be used for account recovery. You will be notified of any changes to this policy.
         </div>
-        <div class="modal-buttons">
-            <button class="modal-btn secondary" onclick="openSaveModal()">💾 Экспорт</button>
-            <button class="modal-btn cancel" onclick="closeProfileModal()">Закрыть</button>
-        </div>
-    </div>
-</div>
-
-<!-- Модальное окно "Поделиться" -->
-<div id="shareModal" class="modal">
-    <div class="modal-content">
-        <h3>🔗 Поделиться игрой</h3>
-        <p>Пригласи друга → получи +100 🍄</p>
-        
-        <div class="share-options">
-            <div class="share-option share-tg" onclick="shareTo('tg')" title="Telegram">✈️</div>
-            <div class="share-option share-vk" onclick="shareTo('vk')" title="ВКонтакте">📘</div>
-            <div class="share-option share-wa" onclick="shareTo('wa')" title="WhatsApp">💬</div>
-            <div class="share-option share-copy" onclick="copyLink()" title="Копировать ссылку">🔗</div>
-        </div>
-        
-        <p style="font-size:12px; color:#888">
-            Ссылка: <span id="shareUrl" style="color:#4dabf7; word-break:break-all">https://ghostnub96.github.io/mushroom-runner/?ref=YOUR_ID</span>
-        </p>
-        
-        <div class="modal-buttons">
-            <button class="modal-btn cancel" onclick="closeShareModal()">Закрыть</button>
-        </div>
+        <button class="btn-small" onclick="document.getElementById('privacyModal').style.display='none'" style="width:100%; margin-top:10px;" data-i18n="btn_close">CLOSE</button>
     </div>
 </div>
 
 <script>
-    // === ИНИЦИАЛИЗАЦИЯ ===
+    // === ПЕРЕВОДЫ ===
+    const translations = {
+        en: {
+            game_title: "MUSHROOM RUNNER",
+            auth_desc: "Login to save progress",
+            lbl_email: "Email",
+            btn_start: "START GAME",
+            btn_privacy: "Privacy Policy",
+            btn_menu: "MENU",
+            lbl_score: "SCORE",
+            lbl_level: "LEVEL",
+            btn_pause: "PAUSE",
+            btn_play: "PLAY",
+            btn_leaderboard: "LEADERBOARD",
+            btn_settings: "SETTINGS",
+            btn_save_code: "SAVE CODE",
+            btn_load_code: "LOAD CODE",
+            title_leaderboard: "🏆 LEADERBOARD",
+            sub_leaderboard: "Top 100 players",
+            lbl_player: "Player",
+            footer_leaderboard: "Demo mode: local rating",
+            title_settings: "⚙️ SETTINGS",
+            btn_logout: "LOGOUT",
+            title_crash: "CRASHED!",
+            btn_retry: "RETRY",
+            msg_new_record: "🎉 NEW RECORD!",
+            modal_save_title: "💾 Save Code",
+            btn_copy: "COPY",
+            btn_close: "CLOSE",
+            modal_load_title: "📥 Load Code",
+            btn_load: "LOAD",
+            title_privacy: "PRIVACY POLICY",
+            privacy_content: `<strong>Data Storage:</strong> In this demo version, your email, progress, and score are stored exclusively in your browser's LocalStorage. No data is sent to any server.<br><br><strong>Usage:</strong> We use the email solely as a unique identifier to save your game progress locally.<br><br><strong>Future Updates:</strong> In future versions with a backend, your email may be used for account recovery. You will be notified of any changes to this policy.`,
+            back: "Back"
+        },
+        ru: {
+            game_title: "ГРИБ БЕЖИТ",
+            auth_desc: "Войди, чтобы сохранить прогресс",
+            lbl_email: "Email",
+            btn_start: "НАЧАТЬ",
+            btn_privacy: "Политика конф.",
+            btn_menu: "МЕНЮ",
+            lbl_score: "СЧЁТ",
+            lbl_level: "УРОВЕНЬ",
+            btn_pause: "ПАУЗА",
+            btn_play: "ИГРАТЬ",
+            btn_leaderboard: "РЕЙТИНГ",
+            btn_settings: "НАСТРОЙКИ",
+            btn_save_code: "КОД СОХРАНЕНИЯ",
+            btn_load_code: "ЗАГРУЗИТЬ КОД",
+            title_leaderboard: "🏆 РЕЙТИНГ",
+            sub_leaderboard: "Топ-100 игроков",
+            lbl_player: "Игрок",
+            footer_leaderboard: "Демо: рейтинг локальный",
+            title_settings: "⚙️ НАСТРОЙКИ",
+            btn_logout: "ВЫЙТИ",
+            title_crash: "ВРЕЗАЛСЯ!",
+            btn_retry: "ПОВТОРИТЬ",
+            msg_new_record: "🎉 НОВЫЙ РЕКОРД!",
+            modal_save_title: "💾 Код сохранения",
+            btn_copy: "КОПИРОВАТЬ",
+            btn_close: "ЗАКРЫТЬ",
+            modal_load_title: "📥 Загрузить код",
+            btn_load: "ЗАГРУЗИТЬ",
+            title_privacy: "ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ",
+            privacy_content: `<strong>Хранение данных:</strong> В демо-версии ваш email, прогресс и счёт хранятся только в LocalStorage вашего браузера. Данные не отправляются на сервер.<br><br><strong>Использование:</strong> Email используется только как уникальный ключ для сохранения прогресса.<br><br><strong>Будущие обновления:</strong> В версиях с сервером email может использоваться для восстановления аккаунта.`,
+            back: "Назад"
+        }
+    };
+
+    let currentLang = localStorage.getItem('mushroom_lang') || 'en';
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('mushroom_lang', lang);
+        
+        // Обновляем кнопки
+        document.getElementById('langRu').classList.toggle('active', lang === 'ru');
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+
+        // Обновляем тексты
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang][key]) {
+                if (key === 'privacy_content') el.innerHTML = translations[lang][key];
+                else el.innerText = translations[lang][key];
+            }
+        });
+        
+        // Обновляем настройки
+        updateSettingsUI();
+    }
+
+    // === ИГРОВАЯ ЛОГИКА ===
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     let W, H, GROUND_Y;
@@ -568,454 +330,301 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // === СИСТЕМА ПОЛЬЗОВАТЕЛЕЙ И РЕЙТИНГА ===
     let currentUser = null;
-    const USERS_STORAGE = 'mushroom_demo_users';
-    const LEADERBOARD_STORAGE = 'mushroom_demo_leaderboard';
+    const STORAGE_USERS = 'mushroom_users';
+    const STORAGE_LEADERBOARD = 'mushroom_leaderboard';
+
+    function getAllUsers() { try { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '{}'); } catch(e) { return {}; } }
+    function saveAllUsers(u) { try { localStorage.setItem(STORAGE_USERS, JSON.stringify(u)); } catch(e) {} }
     
-    // Загрузка всех пользователей
-    function getAllUsers() {
-        try { return JSON.parse(localStorage.getItem(USERS_STORAGE) || '{}'); }
-        catch(e) { return {}; }
-    }
-    function saveAllUsers(users) {
-        try { localStorage.setItem(USERS_STORAGE, JSON.stringify(users)); }
-        catch(e) { console.error('Save users error:', e); }
-    }
-    
-    // Загрузка рейтинга (топ-100 записей)
     function getLeaderboard() {
-        try {
-            const data = JSON.parse(localStorage.getItem(LEADERBOARD_STORAGE) || '[]');
-            return data.sort((a,b) => b.score - a.score).slice(0, 100);
-        } catch(e) { return []; }
+        try { return (JSON.parse(localStorage.getItem(STORAGE_LEADERBOARD) || '[]')).sort((a,b) => b.score - a.score).slice(0, 100); } catch(e) { return []; }
     }
-    
-    // Сохранение результата в рейтинг
-    function submitScore(username, score) {
-       // 🔧 BACKEND: Отправка счёта на сервер
-async function submitScore(username, score) {
-    const response = await fetch('/api/leaderboard/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, score, timestamp: Date.now() })
-    });
-    return await response.json();
-}
 
-// 🔧 BACKEND: Получение глобального рейтинга
-async function getLeaderboard(page = 1, limit = 100) {
-    const response = await fetch(`/api/leaderboard?page=${page}&limit=${limit}`);
-    return await response.json();
-}
-
-// 🔧 BACKEND: Получение места игрока
-async function getPlayerRank(username) {
-    const response = await fetch(`/api/leaderboard/rank?username=${username}`);
-    const data = await response.json();
-    return data.rank;
-}
-        // Демо-режим: сохраняем локально
-        const leaderboard = getLeaderboard();
-        const existingIndex = leaderboard.findIndex(entry => entry.username === username);
-        
-        if (existingIndex >= 0) {
-            // Обновляем, если новый счёт лучше
-            if (score > leaderboard[existingIndex].score) {
-                leaderboard[existingIndex].score = score;
-                leaderboard[existingIndex].date = Date.now();
-            }
+    function submitScore(email, score) {
+        let lb = getLeaderboard();
+        let idx = lb.findIndex(e => e.email === email);
+        if (idx >= 0) {
+            if (score > lb[idx].score) lb[idx].score = score;
         } else {
-            // Добавляем нового игрока
-            leaderboard.push({ username, score, date: Date.now() });
+            lb.push({ email, score });
         }
-        
-        // Сортируем и обрезаем до 100
-        leaderboard.sort((a,b) => b.score - a.score);
-        const trimmed = leaderboard.slice(0, 100);
-        localStorage.setItem(LEADERBOARD_STORAGE, JSON.stringify(trimmed));
-        
-        // Также обновляем лучший счёт в профиле пользователя
-        const users = getAllUsers();
-        if (users[username] && score > users[username].best) {
-            users[username].best = score;
-            saveAllUsers(users);
-        }
+        lb.sort((a,b) => b.score - a.score);
+        localStorage.setItem(STORAGE_LEADERBOARD, JSON.stringify(lb.slice(0,100)));
     }
-    
-    // Получение места игрока в рейтинге
-    function getPlayerRank(username) {
-        const leaderboard = getLeaderboard();
-        const index = leaderboard.findIndex(entry => entry.username === username);
-        return index >= 0 ? index + 1 : null;
-    }
-    
-    // Рендер таблицы лидеров с пагинацией
-    function renderLeaderboard(page = 1) {
-        const rowsContainer = document.getElementById('leaderboardRows');
-        const paginationContainer = document.getElementById('pagination');
-        const leaderboard = getLeaderboard();
-        const perPage = 10;
-        const totalPages = Math.ceil(leaderboard.length / perPage);
-        const start = (page - 1) * perPage;
-        const end = start + perPage;
-        const pageData = leaderboard.slice(start, end);
-        
-        rowsContainer.innerHTML = '';
-        
-        pageData.forEach((entry, idx) => {
-            const globalRank = start + idx + 1;
-            const isMe = entry.username === currentUser;
-            const isTop3 = globalRank <= 3;
-            const medal = globalRank === 1 ? '🥇' : globalRank === 2 ? '🥈' : globalRank === 3 ? '🥉' : '';
-            const avatar = entry.username[0]?.toUpperCase() || '?';
-            
-            const row = document.createElement('div');
-            row.className = `leaderboard-row ${isTop3 ? `top${globalRank}` : ''}`;
-            row.innerHTML = `
-                <div class="rank ${isTop3 ? `top${globalRank}` : ''}">
-                    ${medal || globalRank}
-                </div>
-                <div class="player-info">
-                    <div class="player-avatar">${avatar}</div>
-                    <span class="player-name ${isMe ? 'me' : ''}">${entry.username}${isMe ? ' (ты)' : ''}</span>
-                </div>
-                <div class="score">${entry.score.toLocaleString('ru-RU')}</div>
-            `;
-            rowsContainer.appendChild(row);
-        });
-        
-        // Пагинация
-        paginationContainer.innerHTML = '';
-        if (totalPages > 1) {
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'page-btn';
-            prevBtn.innerText = '◀';
-            prevBtn.disabled = page === 1;
-            prevBtn.onclick = () => renderLeaderboard(page - 1);
-            paginationContainer.appendChild(prevBtn);
-            
-            for (let p = 1; p <= totalPages; p++) {
-                if (p === 1 || p === totalPages || (p >= page - 2 && p <= page + 2)) {
-                    const btn = document.createElement('button');
-                    btn.className = `page-btn ${p === page ? 'active' : ''}`;
-                    btn.innerText = p;
-                    btn.onclick = () => renderLeaderboard(p);
-                    paginationContainer.appendChild(btn);
-                } else if (p === page - 3 || p === page + 3) {
-                    const span = document.createElement('span');
-                    span.innerText = '...';
-                    span.style.color = '#666';
-                    paginationContainer.appendChild(span);
-                }
-            }
-            
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'page-btn';
-            nextBtn.innerText = '▶';
-            nextBtn.disabled = page === totalPages;
-            nextBtn.onclick = () => renderLeaderboard(page + 1);
-            paginationContainer.appendChild(nextBtn);
-        }
-        
-        // Обновляем отображение места игрока
-        if (currentUser) {
-            const rank = getPlayerRank(currentUser);
-            document.getElementById('myRankDisplay').innerText = rank ? `#${rank}` : '-';
-            document.getElementById('modalRank').innerText = rank ? `#${rank}` : '-';
-        }
-    }
-    
-    // Регистрация / Вход
+
     function handleLogin() {
-        const username = document.getElementById('usernameInput').value.trim();
-        if (!username || username.length < 2) {
-            alert('Никнейм должен содержать минимум 2 символа');
+        const email = document.getElementById('emailInput').value.trim();
+        if (!email || !email.includes('@')) {
+            alert(currentLang === 'ru' ? 'Введите корректный Email' : 'Please enter a valid Email');
             return;
         }
+
+        currentUser = email;
+        localStorage.setItem('mushroom_current_user', email);
         
-        const users = getAllUsers();
-        if (!users[username]) {
-            users[username] = createNewProfile();
+        let users = getAllUsers();
+        if (!users[email]) {
+            users[email] = { best: 0, veshenki: 0, ownedSkins: ['classic'], activeSkin: 'classic' };
             saveAllUsers(users);
-            showText(W/2, H/2, `🎉 Добро пожаловать, ${username}!`, 'bonus-text');
         }
         
-        currentUser = username;
-        localStorage.setItem('mushroom_current_user', username);
-        loadUserProfile();
+        // Load save
+        Object.assign(gameState, users[email]);
         
         document.getElementById('authScreen').classList.add('hidden');
         document.getElementById('mainMenu').classList.remove('hidden');
-        updateProfileUI();
-        renderLeaderboard(1);
-        
-        trackEvent('user_login', { username });
+        setLanguage(currentLang);
     }
-    
-    function createNewProfile() {
-        return {
-            best: 0, veshenki: 0, ownedSkins: ['classic'], activeSkin: 'classic',
-            inventory: [], settings: { sound: true, music: true, jumpSound: true },
-            referralsGiven: 0, founderBonusReceived: false,
-            createdAt: Date.now(), lastPlayed: Date.now()
-        };
-    }
-    
-    function loadUserProfile() {
-        if (!currentUser) return;
-        const users = getAllUsers();
-        const profile = users[currentUser];
-        if (profile) {
-            Object.assign(save, profile);
-        }
-        updateUI();
-    }
-    
-    function saveUserProfile() {
-        if (!currentUser) return;
-        const users = getAllUsers();
-        users[currentUser] = { ...save, lastPlayed: Date.now() };
-        saveAllUsers(users);
-    }
-    
+
     function logout() {
-        saveUserProfile();
+        saveProgress();
         currentUser = null;
         localStorage.removeItem('mushroom_current_user');
         document.getElementById('mainMenu').classList.add('hidden');
         document.getElementById('authScreen').classList.remove('hidden');
-        document.getElementById('usernameInput').value = '';
+        document.getElementById('emailInput').value = '';
     }
-    
+
     function checkAuth() {
-        const savedUser = localStorage.getItem('mushroom_current_user');
-        if (savedUser) {
+        const saved = localStorage.getItem('mushroom_current_user');
+        if (saved) {
             const users = getAllUsers();
-            if (users[savedUser]) {
-                currentUser = savedUser;
-                loadUserProfile();
+            if (users[saved]) {
+                currentUser = saved;
+                Object.assign(gameState, users[saved]);
                 document.getElementById('authScreen').classList.add('hidden');
                 document.getElementById('mainMenu').classList.remove('hidden');
-                updateProfileUI();
-                renderLeaderboard(1);
+                setLanguage(currentLang);
                 return true;
             }
         }
         return false;
     }
-    
-    function updateProfileUI() {
+
+    let gameState = { best: 0, veshenki: 0, ownedSkins: ['classic'], activeSkin: 'classic' };
+    function saveProgress() {
         if (!currentUser) return;
-        document.getElementById('profileName').innerText = currentUser;
-        document.getElementById('modalUsername').innerText = currentUser;
-        document.getElementById('modalBestScore').innerText = save.best;
-        document.getElementById('modalBalance').innerText = save.veshenki;
-        document.getElementById('modalSkinsCount').innerText = save.ownedSkins.length;
-        document.getElementById('profileAvatar').innerText = currentUser[0].toUpperCase();
-        
-        const rank = getPlayerRank(currentUser);
-        document.getElementById('modalRank').innerText = rank ? `#${rank}` : '-';
-        document.getElementById('myRankDisplay').innerText = rank ? `#${rank}` : '-';
+        let users = getAllUsers();
+        users[currentUser] = { ...gameState };
+        saveAllUsers(users);
     }
 
-    // === АНАЛИТИКА И БОНУС ОСНОВАТЕЛЯ ===
-    const ANALYTICS = { sessionId: Date.now() + '_' + Math.random().toString(36).slice(2), startTime: Date.now(), pageViews: 0 };
-    let playerId = currentUser || localStorage.getItem('playerId') || Math.random().toString(36).slice(2, 10);
-    if (!currentUser) localStorage.setItem('playerId', playerId);
-    
-    const DEPLOY_DATE = new Date('2026-01-20T00:00:00');
-    const NOW = new Date();
-    const DAYS_SINCE_DEPLOY = (NOW - DEPLOY_DATE) / (1000 * 60 * 60 * 24);
-    
-    function checkFounderBonus() {
-        if (DAYS_SINCE_DEPLOY < 7 && !save.ownedSkins.includes('founder')) {
-            save.ownedSkins.push('founder'); save.veshenki += 500; saveUserProfile();
-            setTimeout(() => {
-                showText(W/2, H/2 - 50, '🎁 Ты один из первых!', 'referral-text');
-                setTimeout(() => { showText(W/2, H/2 + 20, '+500 🍄 и скин "Основатель" 👑', 'referral-text'); playSfx('referral'); }, 800);
-            }, 1500);
-        }
-    }
-    
-    function trackEvent(event, data = {}) { console.log(`[ANALYTICS] ${event}`, { ...data, user: currentUser, session: ANALYTICS.sessionId }); }
-
-    // === АУДИО ===
-    let audioCtx = null;
-    let settings = { sound: true, music: true, jumpSound: true };
-    let musicInterval = null;
-    function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); if (settings.music && !musicInterval) startMusic(); }
-    function playJumpSound() { /* ... (оставляем как было) ... */ }
-    const TRACKS = [ /* ... */ ];
-    function startMusic() { /* ... */ }
-    function stopMusic() { if (musicInterval) { clearInterval(musicInterval); musicInterval = null; } }
-    function playSfx(type) { /* ... */ }
-
-    // === СОХРАНЕНИЯ (ИГРОВЫЕ) ===
-    let save = createNewProfile();
-    
-    // === СКИНЫ ===
-    const SKINS = { /* ... (оставляем как было) ... */ };
-    // Функции отрисовки скинов...
-    function drawFounder(p) { /* ... */ }
-    function drawGolden(p) { /* ... */ }
-    function drawDiamond(p) { /* ... */ }
-    function drawCosmic(p) { /* ... */ }
-    function drawClassic(p) { /* ... */ }
-    function drawTophat(p) { /* ... */ }
-    function drawSport(p) { /* ... */ }
-    function drawSuit(p) { /* ... */ }
-    function drawNinja(p) { /* ... */ }
-    function drawKing(p) { /* ... */ }
-
-    // === ПРЕДМЕТЫ ===
-    const ITEMS = { /* ... */ };
-
-    // === ИГРОВАЯ ЛОГИКА ===
-    let state = 'MENU', frame = 0, score = 0, level = 1, baseSpeed = 5;
-    let passed = 0, sessionVeshenki = 0, legFrame = 0, spawnTimer = 0;
-    let activeBuffs = { shield: 0, super: 0, monster: 0 }, isMonsterMode = false, rewardThreshold = 500;
-    const DISTANCES = [200, 280, 350, 420, 500, 580, 650, 750, 850, 1000];
-    const LVL = [{s:5,n:10},{s:7,n:12},{s:9,n:15},{s:11,n:18},{s:13,n:22}];
-    const POINTS_PER_OBS = 250;
-
-    const player = { /* ... (оставляем как было) ... */ };
-    let obstacles = [];
-    const OBS_TYPES = ['tree', 'bush', 'grass', 'bug', 'rock'];
-    class Obs { /* ... */ }
-    let bonuses = [];
-    class Bonus { /* ... */ }
-
-    function showText(x, y, txt, cls) { /* ... */ }
-    function updateUI() { /* ... */ }
-    function updateBuffUI() { /* ... */ }
-
-    // === УПРАВЛЕНИЕ ВКЛАДКАМИ ===
-    function switchTab(tabId, btn) { /* ... */ }
-    function switchShopTab(tabId, btn) { /* ... */ }
-    function renderSkins() { /* ... */ }
-    function renderInventory(full = false) { /* ... */ }
-    function renderShop() { /* ... */ }
-
-    // === НАСТРОЙКИ ===
-    function updateSettingsUI() { /* ... */ }
-    function toggleSetting(k) { /* ... */ }
-    function togglePause() { /* ... */ }
-
-    function startGame() {
-        initAudio(); trackEvent('game_start'); checkFounderBonus();
-        document.getElementById('mainMenu').classList.add('hidden'); document.getElementById('hud').style.display='flex';
-        resetGame(); state='PLAY'; loop();
-    }
-    function resetGame() { /* ... */ }
-    function restartGame() { /* ... */ }
-    function showLevelOverlay(lvl) { /* ... */ }
-
-    // === ЦИКЛ ===
-    let gameSpeed = 5;
-    function applySkinStats() { /* ... */ }
-
-    function loop() {
-        if(state!=='PLAY') return;
-        ctx.clearRect(0,0,W,H);
-        ctx.strokeStyle='#fff'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(0,GROUND_Y); ctx.lineTo(W,GROUND_Y); ctx.stroke();
-        if(activeBuffs.shield>0) activeBuffs.shield-=1/60;
-        if(activeBuffs.monster>0) { activeBuffs.monster-=1/60; if(activeBuffs.monster<=0){ isMonsterMode=false; activeBuffs.monster=0; gameSpeed = baseSpeed * (SKINS[save.activeSkin]?.stats?.speed || 1); } }
-        updateBuffUI();
-        if (score >= rewardThreshold) { save.veshenki += 50; sessionVeshenki += 50; showText(player.x, player.y - 30, '+50 (дистанция)', 'bonus-text'); rewardThreshold += 500; saveUserProfile(); updateUI(); }
-        player.update(); player.draw(); legFrame++;
-        spawnTimer--;
-        if(spawnTimer<=0) { const gap = DISTANCES[Math.floor(Math.random()*DISTANCES.length)]; if(passed+obstacles.length < LVL[level-1].n+2) obstacles.push(new Obs()); spawnTimer = gap / gameSpeed; }
-        if(Math.random()<0.003 && bonuses.length<2) bonuses.push(new Bonus());
-        for(let i=obstacles.length-1;i>=0;i--) {
-            let o=obstacles[i]; o.update(); o.draw();
-            let hit = player.x < o.x+o.w-5 && player.x+player.w > o.x+5 && player.y < o.y+o.h-5 && player.y+player.h > o.y+5;
-            if(hit) {
-                if(isMonsterMode || activeBuffs.shield>0) { obstacles.splice(i,1); score+=50; continue; }
-                else {
-                    state='GAMEOVER'; trackEvent('game_over', { score, level });
-                    if(score>save.best) save.best=score;
-                    save.veshenki+=sessionVeshenki;
-                    
-                    // 🔥 ОТПРАВКА СЧЁТА В РЕЙТИНГ 🔥
-                    if (currentUser && score > 0) {
-                        submitScore(currentUser, score);
-                        // Проверяем, новый ли это рекорд
-                        const rank = getPlayerRank(currentUser);
-                        if (rank && rank <= 100) {
-                            document.getElementById('newRecord').style.display = 'block';
-                        }
-                    }
-                    
-                    saveUserProfile();
-                    document.getElementById('endTitle').innerText = level>=5?'ПОБЕДА':'ВРЕЗАЛСЯ';
-                    document.getElementById('finalScore').innerText=score; document.getElementById('sessionVeshenki').innerText=sessionVeshenki; document.getElementById('totalVeshenki').innerText=save.veshenki;
-                    document.getElementById('gameOverScreen').classList.remove('hidden'); return;
-                }
-            }
-            if(!o.passed && o.x+o.w < player.x) { o.passed=true; score+=POINTS_PER_OBS; passed++; updateUI();
-                if(passed>=LVL[level-1].n) { if(level<5) { level++; baseSpeed=LVL[level-1].s; passed=0; applySkinStats(); showLevelOverlay(level); } else { state='GAMEOVER'; save.best=Math.max(save.best,score); save.veshenki+=sessionVeshenki; saveUserProfile(); document.getElementById('endTitle').innerText='ПОБЕДА'; document.getElementById('finalScore').innerText=score; document.getElementById('sessionVeshenki').innerText=sessionVeshenki; document.getElementById('totalVeshenki').innerText=save.veshenki; document.getElementById('gameOverScreen').classList.remove('hidden'); } } }
-            if(o.x+o.w<0) obstacles.splice(i,1);
-        }
-        for(let i=bonuses.length-1;i>=0;i--) { let b=bonuses[i]; b.update(); b.draw(); if(!b.active){bonuses.splice(i,1); continue;} if(Math.hypot(player.x+25-b.x, player.y+25-b.y) < b.r+25) b.collect(); if(b.x<-50) bonuses.splice(i,1); }
-        frame++; requestAnimationFrame(loop);
-    }
-
-    // === ВВОД ===
-    document.addEventListener('keydown', e => { if(e.code==='Space') player.jumpAction(); if(e.code==='Escape' && state==='PLAY') togglePause(); });
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); player.jumpAction(); }, {passive:false});
-    canvas.addEventListener('mousedown', () => player.jumpAction());
-
-    // === МЕНЮ ===
+    // === ИНТЕРФЕЙС ===
     function showScreen(id) {
         document.getElementById('mainMenu').classList.add('hidden');
-        document.querySelectorAll('.overlay').forEach(el => { if(el.id!==id) el.classList.add('hidden'); });
+        document.querySelectorAll('.overlay').forEach(el => { if(el.id !== id) el.classList.add('hidden'); });
         document.getElementById(id).classList.remove('hidden');
-        if (id === 'custom') { renderSkins(); renderInventory(); }
-        if (id === 'shop') { renderShop(); }
-        if (id === 'inventory') renderInventory(true);
-        if (id === 'leaderboard') { renderLeaderboard(1); }
-        updateUI();
+        
+        if (id === 'leaderboard') renderLeaderboard();
     }
+
     function goToMenu() {
         document.getElementById('hud').style.display = 'none';
         document.getElementById('gameOverScreen').classList.add('hidden');
-        document.getElementById('pauseMenu').classList.add('hidden');
+        document.getElementById('pauseMenu')?.classList.add('hidden');
         document.getElementById('levelOverlay').style.display = 'none';
-        document.getElementById('shareModal').style.display = 'none';
-        showScreen('mainMenu'); state = 'MENU'; stopMusic(); trackEvent('menu_open');
+        showScreen('mainMenu');
+        state = 'MENU';
     }
 
-    // === СИСТЕМА СОХРАНЕНИЙ (МОДАЛЬНЫЕ ОКНА) ===
-    function openSaveModal() { const code = generateSaveCode(); if (code) { document.getElementById('saveCodeOutput').value = code; document.getElementById('saveModal').style.display = 'flex'; trackEvent('save_modal_open'); } else { alert('Ошибка генерации кода'); } }
-    function closeSaveModal() { document.getElementById('saveModal').style.display = 'none'; }
-    function copySaveCode() { const el = document.getElementById('saveCodeOutput'); el.select(); document.execCommand('copy'); showText(W/2, H/2, '📋 Код скопирован!', 'bonus-text'); trackEvent('save_code_copied'); }
-    function openLoadModal() { document.getElementById('saveCodeInput').value = ''; document.getElementById('loadStatus').innerText = ''; document.getElementById('loadModal').style.display = 'flex'; }
-    function closeLoadModal() { document.getElementById('loadModal').style.display = 'none'; }
-    function loadSaveCode() { const code = document.getElementById('saveCodeInput').value.trim(); const status = document.getElementById('loadStatus'); if (loadFromSaveCode(code)) { status.innerText = '✅ Прогресс загружен!'; status.style.color = '#69db7c'; setTimeout(() => { closeLoadModal(); goToMenu(); showText(W/2, H/2, '🎉 Прогресс восстановлен!', 'bonus-text'); }, 1000); trackEvent('save_code_loaded'); } else { status.innerText = '❌ Неверный код!'; status.style.color = '#e63946'; } }
-    function openProfileModal() { updateProfileUI(); document.getElementById('profileModal').style.display = 'flex'; }
-    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+    function showPrivacyPolicy() { document.getElementById('privacyModal').style.display = 'flex'; }
 
-    // === ПОДЕЛИТЬСЯ ===
-    function openShareModal() { document.getElementById('shareModal').style.display = 'flex'; trackEvent('share_modal_open'); }
-    function closeShareModal() { document.getElementById('shareModal').style.display = 'none'; }
-    function shareTo(platform) { /* ... */ }
-    function copyLink() { /* ... */ }
-    function copyReferral() { /* ... */ }
+    function renderLeaderboard() {
+        const rows = document.getElementById('leaderboardRows');
+        rows.innerHTML = '';
+        const lb = getLeaderboard();
+        lb.forEach((entry, i) => {
+            const rank = i + 1;
+            const isMe = entry.email === currentUser;
+            let medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+            let cls = rank <= 3 ? `top${rank}` : '';
+            
+            const div = document.createElement('div');
+            div.className = `leaderboard-row`;
+            div.innerHTML = `
+                <span class="rank ${cls}">${medal}</span>
+                <div class="player-info">
+                    <div class="player-avatar">${entry.email[0].toUpperCase()}</div>
+                    <span>${entry.email} ${isMe ? '(YOU)' : ''}</span>
+                </div>
+                <span class="score">${entry.score}</span>
+            `;
+            rows.appendChild(div);
+        });
+    }
 
-    // === СОЦИАЛЬНЫЕ ЭЛЕМЕНТЫ ===
-    function updateSocialProof() { const online = 50 + Math.floor(Math.random() * 200); const shares = 10 + Math.floor(Math.random() * 100); document.getElementById('onlineCount').innerText = online; document.getElementById('sharesCount').innerText = shares; }
-    setInterval(updateSocialProof, 30000);
+    function openSaveModal() {
+        const code = btoa(JSON.stringify(gameState));
+        document.getElementById('saveCodeOutput').value = code;
+        document.getElementById('saveModal').style.display = 'flex';
+    }
+    function copySaveCode() {
+        const el = document.getElementById('saveCodeOutput');
+        el.select(); document.execCommand('copy');
+        alert(currentLang === 'ru' ? 'Скопировано!' : 'Copied!');
+    }
+    function openLoadModal() { document.getElementById('loadModal').style.display = 'flex'; }
+    function loadSaveCode() {
+        try {
+            const code = document.getElementById('saveCodeInput').value.trim();
+            const data = JSON.parse(atob(code));
+            Object.assign(gameState, data);
+            saveProgress();
+            document.getElementById('loadStatus').innerText = currentLang === 'ru' ? '✅ Загружено!' : '✅ Loaded!';
+            document.getElementById('loadStatus').style.color = '#69db7c';
+        } catch(e) {
+            document.getElementById('loadStatus').innerText = currentLang === 'ru' ? '❌ Ошибка кода' : '❌ Invalid code';
+            document.getElementById('loadStatus').style.color = '#e63946';
+        }
+    }
 
-    // === КОДЫ СОХРАНЕНИЯ (для переноса между устройствами) ===
-    function generateSaveCode() { /* ... */ }
-    function loadFromSaveCode(code) { /* ... */ }
+    // === ИГРОВОЙ ЦИКЛ (Упрощенная версия для демо) ===
+    let state = 'MENU';
+    let score = 0, level = 1, speed = 5;
+    let passed = 0, sessionVeshenki = 0;
+    let playerY = 0, vy = 0, onGround = true;
+    const GRAVITY = 0.7;
+    const JUMP_FORCE = -14;
+    
+    let obstacles = [];
+    let bonuses = [];
+    let frame = 0;
+    let spawnTimer = 0;
 
-    // === ИНИЦИАЛИЗАЦИЯ ===
-    if (!checkAuth()) { document.getElementById('authScreen').classList.remove('hidden'); }
-    updateUI(); updateSettingsUI(); updateSocialProof();
-    ctx.strokeStyle='#fff'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(0,GROUND_Y); ctx.lineTo(W,GROUND_Y); ctx.stroke();
-    window.addEventListener('beforeunload', () => { if(currentUser) saveUserProfile(); });
+    const player = { x: 100, w: 40, h: 40 };
+
+    function startGame() {
+        document.getElementById('mainMenu').classList.add('hidden');
+        document.getElementById('hud').style.display = 'flex';
+        resetGame();
+        state = 'PLAY';
+        loop();
+    }
+
+    function resetGame() {
+        score = 0; level = 1; passed = 0; speed = 5;
+        sessionVeshenki = 0;
+        playerY = GROUND_Y - 50; vy = 0; onGround = true;
+        obstacles = []; bonuses = []; frame = 0; spawnTimer = 0;
+        updateUI();
+    }
+
+    function restartGame() {
+        document.getElementById('gameOverScreen').classList.add('hidden');
+        resetGame();
+        state = 'PLAY';
+        loop();
+    }
+
+    function updateUI() {
+        document.getElementById('currentScore').innerText = score;
+        document.getElementById('levelDisplay').innerText = level;
+        document.getElementById('currencyDisplay').innerText = gameState.veshenki;
+    }
+
+    function loop() {
+        if (state !== 'PLAY') return;
+        ctx.clearRect(0, 0, W, H);
+        
+        // Земля
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(0, GROUND_Y); ctx.lineTo(W, GROUND_Y); ctx.stroke();
+
+        // Игрок
+        if (!onGround) { vy += GRAVITY; playerY += vy; }
+        if (playerY >= GROUND_Y - 50) { playerY = GROUND_Y - 50; vy = 0; onGround = true; }
+        
+        ctx.fillStyle = '#fff';
+        // Шляпка
+        ctx.beginPath(); ctx.ellipse(player.x + 20, playerY + 20, 20, 12, 0, Math.PI, 0); ctx.fill();
+        // Ножка
+        ctx.fillRect(player.x + 15, playerY + 20, 10, 30);
+        // Ножки бега
+        const off = Math.sin(frame * 0.3) * 5;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(player.x + 15, playerY + 50); ctx.lineTo(player.x + 10 - off, playerY + 60); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(player.x + 25, playerY + 50); ctx.lineTo(player.x + 30 + off, playerY + 60); ctx.stroke();
+
+        // Спавн препятствий
+        spawnTimer--;
+        if (spawnTimer <= 0) {
+            obstacles.push({ x: W + 50, y: GROUND_Y - 30, w: 30, h: 30 });
+            spawnTimer = 60 + Math.random() * 60; // Рандомное расстояние
+        }
+
+        // Отрисовка препятствий
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+            let o = obstacles[i];
+            o.x -= speed;
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(o.x, o.y, o.w, o.h);
+            
+            // Коллизия
+            if (player.x < o.x + o.w && player.x + player.w > o.x && playerY < o.y + o.h && playerY + player.h > o.y) {
+                // Game Over
+                state = 'GAMEOVER';
+                if (score > gameState.best) gameState.best = score;
+                gameState.veshenki += sessionVeshenki;
+                submitScore(currentUser, score);
+                saveProgress();
+                
+                document.getElementById('endTitle').innerText = level >= 5 ? "WIN!" : (currentLang === 'ru' ? "ВРЕЗАЛСЯ!" : "CRASHED!");
+                document.getElementById('finalScore').innerText = score;
+                document.getElementById('sessionVeshenki').innerText = sessionVeshenki;
+                document.getElementById('gameOverScreen').classList.remove('hidden');
+                return;
+            }
+            
+            if (o.x + o.w < player.x && !o.passed) {
+                o.passed = true;
+                score += 100;
+                sessionVeshenki += 10;
+                passed++;
+                updateUI();
+            }
+            if (o.x + o.w < 0) obstacles.splice(i, 1);
+        }
+
+        // Спавн бонусов
+        if (Math.random() < 0.005) {
+            bonuses.push({ x: W + 50, y: GROUND_Y - 80 - Math.random() * 50, val: 50 });
+        }
+
+        // Бонусы
+        for (let i = bonuses.length - 1; i >= 0; i--) {
+            let b = bonuses[i];
+            b.x -= speed;
+            ctx.fillStyle = '#d4af37';
+            ctx.beginPath(); ctx.arc(b.x, b.y, 10, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.font = '10px monospace'; ctx.fillText('★', b.x-3, b.y+3);
+            
+            let dist = Math.hypot((player.x + 20) - b.x, (playerY + 20) - b.y);
+            if (dist < 30) {
+                sessionVeshenki += b.val;
+                gameState.veshenki += b.val;
+                bonuses.splice(i, 1);
+                updateUI();
+            } else if (b.x < 0) bonuses.splice(i, 1);
+        }
+
+        frame++;
+        requestAnimationFrame(loop);
+    }
+
+    // Управление
+    function jump() {
+        if (onGround && state === 'PLAY') { vy = JUMP_FORCE; onGround = false; }
+    }
+    document.addEventListener('keydown', e => { if(e.code === 'Space') jump(); });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); jump(); });
+    canvas.addEventListener('mousedown', jump);
+
+    // Инициализация
+    if (!checkAuth()) {
+        document.getElementById('authScreen').classList.remove('hidden');
+    }
+    setLanguage(currentLang);
 </script>
 </body>
 </html>
